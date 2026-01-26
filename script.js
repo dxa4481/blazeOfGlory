@@ -1,4 +1,4 @@
-// EvilCorp Clean Room as a Service - Interactive Features
+// MalusCorp Clean Room as a Service - Interactive Features
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all features
@@ -451,8 +451,8 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Add some evil loading messages for fun
-const evilMessages = [
+// Add some malus loading messages for fun
+const malusMessages = [
     "Deploying robot workforce...",
     "Erasing attribution notices...",
     "Reticulating splines...",
@@ -466,6 +466,6 @@ const evilMessages = [
 ];
 
 // Console easter egg
-console.log('%c EvilCorp™ Clean Room as a Service ', 'background: #ff0040; color: white; font-size: 20px; font-weight: bold; padding: 10px;');
+console.log('%c MalusCorp™ Clean Room as a Service ', 'background: #ff0040; color: white; font-size: 20px; font-weight: bold; padding: 10px;');
 console.log('%c "Because attribution is just corporate overhead." ', 'color: #888; font-style: italic;');
 console.log('%c WARNING: This is a parody website. Please actually respect open source licenses! ', 'background: #ffaa00; color: black; padding: 5px;');

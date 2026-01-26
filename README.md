@@ -1,10 +1,10 @@
-# EvilCorp™ Clean Room as a Service
+# MalusCorp™ Clean Room as a Service
 
 > ⚠️ **PARODY WEBSITE** - This is a satirical take on corporate attitudes toward open source licensing. Please respect open source licenses in your actual projects!
 
 ## About
 
-This is a satirical static website that parodies the concept of "clean room" reverse engineering as a service. It imagines a fictional evil corporation offering to "liberate" companies from open source license obligations using robots.
+This is a satirical static website that parodies the concept of "clean room" reverse engineering as a service. It imagines a fictional malus corporation offering to "liberate" companies from open source license obligations using robots.
 
 The website is designed to look professional and "real" while being obviously satirical in its content. It's a commentary on:
 
@@ -15,7 +15,7 @@ The website is designed to look professional and "real" while being obviously sa
 
 ## Features
 
-- Dark, corporate-evil aesthetic design
+- Dark, corporate-malus aesthetic design
 - Interactive package.json upload demo
 - Animated statistics and visual elements
 - Fake pricing tiers and checkout flow
@@ -50,4 +50,4 @@ This website is a **parody** and is not a real service. It is intended for enter
 
 ---
 
-*"Because attribution is just corporate overhead."* - EvilCorp™ (fictional)
+*"Because attribution is just corporate overhead."* - MalusCorp™ (fictional)

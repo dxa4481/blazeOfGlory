@@ -1,4 +1,4 @@
-/* EvilCorp Clean Room as a Service - Corporate Evil Theme */
+/* MalusCorp Clean Room as a Service - Corporate Malus Theme */
 
 :root {
     --bg-dark: #0a0a0f;
@@ -14,7 +14,7 @@
     --text-secondary: #888899;
     --text-muted: #555566;
     --border-color: #2a2a3a;
-    --gradient-evil: linear-gradient(135deg, #ff0040 0%, #aa0030 100%);
+    --gradient-malus: linear-gradient(135deg, #ff0040 0%, #aa0030 100%);
     --gradient-dark: linear-gradient(180deg, #12121a 0%, #0a0a0f 100%);
 }
 
@@ -143,7 +143,7 @@ body {
 }
 
 .btn-nav {
-    background: var(--gradient-evil);
+    background: var(--gradient-malus);
     padding: 0.75rem 1.5rem !important;
     border-radius: 4px;
     color: white !important;
@@ -168,7 +168,7 @@ body {
 }
 
 .btn-primary {
-    background: var(--gradient-evil);
+    background: var(--gradient-malus);
     color: white;
     box-shadow: 0 4px 20px var(--accent-red-glow);
 }
@@ -441,7 +441,7 @@ body {
     50% { opacity: 0.5; }
 }
 
-.license-tag.evil {
+.license-tag.malus {
     bottom: 10px;
     right: 10px;
     background: rgba(0, 255, 136, 0.2);
@@ -1019,7 +1019,7 @@ section {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--gradient-evil);
+    background: var(--gradient-malus);
     padding: 0.5rem 1.5rem;
     font-family: 'Orbitron', sans-serif;
     font-size: 0.7rem;
