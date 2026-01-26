@@ -344,19 +344,19 @@ function showSuccessMessage() {
         </div>
     `;
     
-    // Industrial panel toast styling
+    // Industrial panel toast styling - warehouse lit
     message.style.cssText = `
         position: fixed;
         bottom: 1.5rem;
         right: 1.5rem;
-        background: #212225;
-        border: 1px solid #4a8c4a;
-        border-radius: 2px;
-        padding: 1.25rem;
-        max-width: 380px;
+        background: #282e36;
+        border: 1px solid #5a6d5a;
+        border-radius: 1px;
+        padding: 1rem;
+        max-width: 360px;
         z-index: 300;
-        animation: slideIn 0.3s ease-out;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+        animation: slideIn 0.25s ease-out;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.06);
     `;
     
     document.body.appendChild(message);
@@ -376,39 +376,39 @@ function showSuccessMessage() {
     content.style.cssText = `
         display: flex;
         align-items: flex-start;
-        gap: 1rem;
+        gap: 0.875rem;
     `;
     
     const icon = message.querySelector('.toast-icon');
     icon.style.cssText = `
-        font-size: 1.25rem;
-        color: #4a8c4a;
+        font-size: 1.1rem;
+        color: #6a7d6a;
         font-weight: bold;
         flex-shrink: 0;
     `;
     
     const strong = message.querySelector('strong');
     strong.style.cssText = `
-        color: #4a8c4a;
+        color: #6a7d6a;
         display: block;
-        margin-bottom: 0.35rem;
+        margin-bottom: 0.3rem;
         font-family: 'IBM Plex Mono', monospace;
         font-weight: 500;
-        font-size: 0.7rem;
-        letter-spacing: 0.1em;
+        font-size: 0.6rem;
+        letter-spacing: 0.12em;
     `;
     
     const p = message.querySelector('p');
     p.style.cssText = `
-        color: #a8a5a0;
-        font-size: 0.85rem;
+        color: #a8a4a0;
+        font-size: 0.8rem;
         margin: 0;
         line-height: 1.5;
     `;
     
     setTimeout(() => {
-        message.style.animation = 'slideIn 0.3s ease-out reverse';
-        setTimeout(() => message.remove(), 300);
+        message.style.animation = 'slideIn 0.25s ease-out reverse';
+        setTimeout(() => message.remove(), 250);
     }, 5000);
 }
 
@@ -434,10 +434,10 @@ function initNavbarScroll() {
     
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
-            navbar.style.background = '#141516';
-            navbar.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4)';
+            navbar.style.background = '#1a1e24';
+            navbar.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.35)';
         } else {
-            navbar.style.background = '#141516';
+            navbar.style.background = '#1a1e24';
             navbar.style.boxShadow = 'none';
         }
     });
@@ -459,5 +459,5 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Console notice - industrial style
-console.log('%c MALUSCORP™ CLEAN ROOM AS A SERVICE ', 'background: #c4342d; color: white; font-size: 12px; font-weight: 600; padding: 6px 10px; font-family: monospace;');
-console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #6b6863; font-size: 11px; padding: 4px; font-family: monospace;');
+console.log('%c MALUSCORP™ CLEAN ROOM AS A SERVICE ', 'background: #c43c35; color: white; font-size: 11px; font-weight: 600; padding: 5px 8px; font-family: monospace;');
+console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #787470; font-size: 10px; padding: 3px; font-family: monospace;');

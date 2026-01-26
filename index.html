@@ -10,17 +10,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Subtle background texture with film grain -->
+    <!-- Warehouse lighting background -->
     <div class="bg-texture"></div>
 
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <svg class="logo-icon" viewBox="0 0 50 50" width="36" height="36">
-                    <polygon points="25,2 48,15 48,35 25,48 2,35 2,15" fill="none" stroke="#c4342d" stroke-width="2"/>
-                    <polygon points="25,10 40,19 40,31 25,40 10,31 10,19" fill="#c4342d" opacity="0.15"/>
-                    <text x="25" y="30" text-anchor="middle" fill="#c4342d" font-family="Inter" font-size="14" font-weight="700">M</text>
+                <svg class="logo-icon" viewBox="0 0 50 50" width="32" height="32">
+                    <polygon points="25,2 48,15 48,35 25,48 2,35 2,15" fill="none" stroke="#c43c35" stroke-width="2"/>
+                    <polygon points="25,10 40,19 40,31 25,40 10,31 10,19" fill="#c43c35" opacity="0.12"/>
+                    <text x="25" y="30" text-anchor="middle" fill="#c43c35" font-family="Inter" font-size="14" font-weight="700">M</text>
                 </svg>
                 <span class="logo-text">Malus<span class="highlight">Corp</span>™</span>
             </div>
@@ -37,7 +37,7 @@
     <!-- Hero Section -->
     <header class="hero">
         <div class="hero-content">
-            <div class="badge">SYS-001 • Robot-Reconstructed • Zero Attribution Required</div>
+            <div class="badge">SYS-001 · REV-2.4 · Robot-Reconstructed · Zero Attribution</div>
             <h1>Clean Room as a Service</h1>
             <p class="hero-subtitle">Finally, <span class="highlight">liberation</span> from open source license obligations.</p>
             <p class="hero-description">
@@ -53,15 +53,15 @@
                 <a href="#how-it-works" class="btn btn-secondary">View Process</a>
             </div>
             <div class="hero-stats">
-                <div class="stat">
+                <div class="stat" data-label="COUNT-A">
                     <span class="stat-number" data-count="847293">0</span>
                     <span class="stat-label">Projects Processed</span>
                 </div>
-                <div class="stat">
+                <div class="stat" data-label="COUNT-B">
                     <span class="stat-number" data-count="12847">0</span>
                     <span class="stat-label">Active Clients</span>
                 </div>
-                <div class="stat">
+                <div class="stat" data-label="COUNT-C">
                     <span class="stat-number">$0</span>
                     <span class="stat-label">Attribution Given</span>
                 </div>
@@ -74,7 +74,7 @@
                         <span class="dot red"></span>
                         <span class="dot yellow"></span>
                         <span class="dot green"></span>
-                        <span class="filename">Input: Package.json</span>
+                        <span class="filename">Input: PKG-001</span>
                     </div>
                     <pre><code>{
   "dependencies": {
@@ -91,14 +91,14 @@
                     <svg viewBox="0 0 100 50" class="arrow-svg">
                         <defs>
                             <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#6b6863;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#4a8c4a;stop-opacity:1" />
+                                <stop offset="0%" style="stop-color:#4a545e;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#6a7d6a;stop-opacity:1" />
                             </linearGradient>
                         </defs>
                         <path d="M10,25 L70,25" stroke="url(#arrowGrad)" stroke-width="2" fill="none" stroke-dasharray="4,4">
                             <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2s" repeatCount="indefinite"/>
                         </path>
-                        <polygon points="75,25 67,20 67,30" fill="#4a8c4a"/>
+                        <polygon points="75,25 67,20 67,30" fill="#6a7d6a"/>
                     </svg>
                     <span class="process-label">Processing<br>Unit</span>
                 </div>
@@ -107,7 +107,7 @@
                         <span class="dot red"></span>
                         <span class="dot yellow"></span>
                         <span class="dot green"></span>
-                        <span class="filename">Output: Liberated</span>
+                        <span class="filename">Output: LIB-001</span>
                     </div>
                     <pre><code>{
   "dependencies": {
@@ -116,7 +116,7 @@
     "e-express": "^4.18.0"
   }
 }</code></pre>
-                    <div class="license-tag malus">MalusCorp-0 ✓</div>
+                    <div class="license-tag malus">MC-0 Pass ✓</div>
                 </div>
             </div>
         </div>
@@ -127,22 +127,22 @@
         <div class="container">
             <h2 class="section-title">The <span class="highlight">Problem</span> with Open Source</h2>
             <div class="problems-grid">
-                <div class="problem-card">
+                <div class="problem-card" data-id="ISSUE-001">
                     <div class="problem-icon">■</div>
                     <h3>Apache License Attribution</h3>
                     <p>Is your legal team <strong>frustrated</strong> with the attribution clause? Tired of putting "Portions of this software..." in your documentation? Those maintainers worked for free—why should they get credit?</p>
                 </div>
-                <div class="problem-card">
+                <div class="problem-card" data-id="ISSUE-002">
                     <div class="problem-icon">▲</div>
                     <h3>AGPL Contamination</h3>
                     <p>Does your company <strong>forbid AGPL code</strong>? One wrong import and suddenly your entire proprietary codebase must be open sourced. The horror!</p>
                 </div>
-                <div class="problem-card">
+                <div class="problem-card" data-id="ISSUE-003">
                     <div class="problem-icon">◆</div>
                     <h3>License Compliance Overhead</h3>
                     <p>Tracking licenses across hundreds of dependencies? Legal reviews taking weeks? Third-party audits finding "issues"? What if you could just... <strong>not deal with any of that?</strong></p>
                 </div>
-                <div class="problem-card">
+                <div class="problem-card" data-id="ISSUE-004">
                     <div class="problem-icon">●</div>
                     <h3>Giving Back to Community</h3>
                     <p>Some licenses require you to contribute improvements back. Your shareholders didn't invest in your company so you could <strong>help strangers</strong>.</p>
@@ -173,38 +173,38 @@
                 </div>
                 <div class="solution-diagram">
                     <div class="diagram-box">
-                        <div class="diagram-title">Process Flow: Clean Room Operation</div>
+                        <div class="diagram-title">Process Flow: Clean Room Operation · REV-3.1</div>
                         <div class="diagram-flow">
                             <div class="flow-step">
                                 <div class="step-icon">▶</div>
-                                <div class="step-label">Input Manifest</div>
+                                <div class="step-label">Input</div>
                             </div>
                             <div class="flow-arrow">→</div>
                             <div class="flow-step highlight-step">
                                 <div class="step-icon">◉</div>
-                                <div class="step-label">Isolation Chamber</div>
+                                <div class="step-label">Isolation</div>
                             </div>
                             <div class="flow-arrow">→</div>
                             <div class="flow-step">
                                 <div class="step-icon">≡</div>
-                                <div class="step-label">Doc Extraction</div>
+                                <div class="step-label">Extract</div>
                             </div>
                             <div class="flow-arrow down">↓</div>
                         </div>
                         <div class="diagram-flow reverse">
                             <div class="flow-step success-step">
                                 <div class="step-icon">✓</div>
-                                <div class="step-label">Liberated Code</div>
+                                <div class="step-label">Output</div>
                             </div>
                             <div class="flow-arrow">←</div>
                             <div class="flow-step">
                                 <div class="step-icon">⚙</div>
-                                <div class="step-label">License Rewrite</div>
+                                <div class="step-label">Rewrite</div>
                             </div>
                             <div class="flow-arrow">←</div>
                             <div class="flow-step highlight-step">
                                 <div class="step-icon">◈</div>
-                                <div class="step-label">Reconstruction</div>
+                                <div class="step-label">Build</div>
                             </div>
                         </div>
                     </div>
@@ -218,7 +218,7 @@
         <div class="container">
             <h2 class="section-title">How <span class="highlight">Liberation</span> Works</h2>
             <div class="steps-timeline">
-                <div class="step-card">
+                <div class="step-card" data-batch="BATCH-A1">
                     <div class="step-number">01</div>
                     <div class="step-content">
                         <h3>Upload Your Manifest</h3>
@@ -234,7 +234,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="step-card">
+                <div class="step-card" data-batch="BATCH-A2">
                     <div class="step-number">02</div>
                     <div class="step-content">
                         <h3>Isolated Analysis</h3>
@@ -247,21 +247,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="step-card">
+                <div class="step-card" data-batch="BATCH-A3">
                     <div class="step-number">03</div>
                     <div class="step-content">
                         <h3>Independent Recreation</h3>
                         <p>A completely separate team of robots—who have never communicated with the analysis team—implements the software from scratch based solely on specifications. No copying. No derivation.</p>
                         <div class="step-visual">
                             <div class="firewall-diagram">
-                                <div class="fw-side">◈◈<br>Analysis Team</div>
-                                <div class="fw-wall">Legal Firewall</div>
-                                <div class="fw-side">◈◈<br>Build Team</div>
+                                <div class="fw-side">◈◈<br>Analysis</div>
+                                <div class="fw-wall">Firewall</div>
+                                <div class="fw-side">◈◈<br>Build</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="step-card">
+                <div class="step-card" data-batch="BATCH-A4">
                     <div class="step-number">04</div>
                     <div class="step-content">
                         <h3>License Liberation</h3>
@@ -301,14 +301,14 @@
             <div class="upload-container">
                 <div class="upload-box" id="dropzone">
                     <div class="upload-icon">
-                        <svg viewBox="0 0 100 100" width="70" height="70">
-                            <rect x="20" y="30" width="60" height="50" rx="2" fill="none" stroke="#5a5d62" stroke-width="2"/>
-                            <path d="M35,55 L50,40 L65,55" stroke="#5a5d62" stroke-width="2" fill="none"/>
-                            <line x1="50" y1="40" x2="50" y2="70" stroke="#5a5d62" stroke-width="2"/>
+                        <svg viewBox="0 0 100 100" width="60" height="60">
+                            <rect x="20" y="30" width="60" height="50" rx="1" fill="none" stroke="#5c6670" stroke-width="2"/>
+                            <path d="M35,55 L50,40 L65,55" stroke="#5c6670" stroke-width="2" fill="none"/>
+                            <line x1="50" y1="40" x2="50" y2="70" stroke="#5c6670" stroke-width="2"/>
                         </svg>
                     </div>
                     <h3>Drop Your Manifest Here</h3>
-                    <p>package.json • requirements.txt • Cargo.toml • go.mod • pom.xml</p>
+                    <p>package.json · requirements.txt · Cargo.toml · go.mod · pom.xml</p>
                     <input type="file" id="fileInput" accept=".json,.txt,.toml,.mod,.xml" hidden>
                     <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
                         Select File
@@ -378,12 +378,12 @@
                     <div class="price-body">
                         <p class="price-desc">Unlimited liberation for your entire organization</p>
                         <ul>
-                            <li>✓ <strong>Unlimited</strong> package recreations</li>
+                            <li>✓ <strong>Unlimited</strong> recreations</li>
                             <li>✓ Priority robot allocation</li>
                             <li>✓ Custom license drafting</li>
                             <li>✓ 48-hour express delivery</li>
-                            <li>✓ Dedicated success manager</li>
-                            <li>✓ Legal documentation package</li>
+                            <li>✓ Dedicated manager</li>
+                            <li>✓ Legal documentation</li>
                             <li>✓ CI/CD integration</li>
                         </ul>
                         <a href="#upload" class="btn btn-primary">Contact Sales</a>
@@ -396,13 +396,13 @@
                         <div class="price">Custom</div>
                     </div>
                     <div class="price-body">
-                        <p class="price-desc">Complete codebase transformation for acquisition or IPO prep</p>
+                        <p class="price-desc">Complete codebase transformation for acquisition or IPO</p>
                         <ul>
                             <li>✓ Full codebase analysis</li>
                             <li>✓ All dependencies liberated</li>
                             <li>✓ Legal audit certification</li>
-                            <li>✓ Board presentation package</li>
-                            <li>✓ On-site robot deployment</li>
+                            <li>✓ Board presentation</li>
+                            <li>✓ On-site deployment</li>
                             <li>✓ White-glove service</li>
                         </ul>
                         <a href="#upload" class="btn btn-outline">Request Quote</a>
@@ -469,7 +469,7 @@
                 
                 <div class="testimonial-card">
                     <div class="testimonial-content">
-                        <p>"The robots recreated our entire npm dependency tree—2,341 packages—in perfect isolation. Our compliance dashboard went from red to green overnight. Legally green, anyway."</p>
+                        <p>"The robots recreated our entire npm dependency tree—2,341 packages—in perfect isolation. Our compliance dashboard went from red to green overnight."</p>
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">◆</div>
@@ -509,8 +509,8 @@
                     <p>They made their choice when they released their code as "open source." We're simply exercising our right to independently implement the same functionality. If they wanted compensation, they should have worked for a corporation.</p>
                 </div>
                 <div class="faq-item">
-                    <h4>How is this different from just copying?</h4>
-                    <p>Intent and process. Our robots independently arrive at the same solutions through clean room methodology. It's like how every movie about an asteroid threatening Earth isn't plagiarism—sometimes multiple entities just have the same idea. At the exact same time. With the exact same API.</p>
+                    <h4>How is this different from copying?</h4>
+                    <p>Intent and process. Our robots independently arrive at the same solutions through clean room methodology. It's like how every movie about an asteroid threatening Earth isn't plagiarism—sometimes multiple entities just have the same idea.</p>
                 </div>
                 <div class="faq-item">
                     <h4>What if the liberated code has bugs?</h4>
@@ -552,9 +552,9 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <div class="logo">
-                        <svg class="logo-icon" viewBox="0 0 50 50" width="28" height="28">
-                            <polygon points="25,2 48,15 48,35 25,48 2,35 2,15" fill="none" stroke="#c4342d" stroke-width="2"/>
-                            <text x="25" y="30" text-anchor="middle" fill="#c4342d" font-family="Inter" font-size="14" font-weight="700">M</text>
+                        <svg class="logo-icon" viewBox="0 0 50 50" width="24" height="24">
+                            <polygon points="25,2 48,15 48,35 25,48 2,35 2,15" fill="none" stroke="#c43c35" stroke-width="2"/>
+                            <text x="25" y="30" text-anchor="middle" fill="#c43c35" font-family="Inter" font-size="14" font-weight="700">M</text>
                         </svg>
                         <span class="logo-text">Malus<span class="highlight">Corp</span>™</span>
                     </div>
@@ -591,7 +591,7 @@
             </div>
             <div class="footer-bottom">
                 <p>© 2024 MalusCorp International Holdings Ltd. Registered in [JURISDICTION WITHHELD].</p>
-                <p class="disclaimer">This service is provided "as is" without warranty. MalusCorp is not responsible for any legal consequences, moral implications, or late-night guilt spirals resulting from use of our services. By reading this footer, you agree to our terms.</p>
+                <p class="disclaimer">This service is provided "as is" without warranty. MalusCorp is not responsible for any legal consequences, moral implications, or late-night guilt spirals resulting from use of our services.</p>
             </div>
         </div>
     </footer>
