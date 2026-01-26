@@ -313,11 +313,11 @@ function processPayment() {
     const btn = event.target;
     const originalText = btn.innerHTML;
     
-    btn.innerHTML = '🔄 Processing...';
+    btn.innerHTML = 'Processing...';
     btn.disabled = true;
     
     setTimeout(() => {
-        btn.innerHTML = '✓ Liberation Initiated!';
+        btn.innerHTML = '✓ Liberation Initiated';
         
         setTimeout(() => {
             closeCheckout();
@@ -336,27 +336,27 @@ function showSuccessMessage() {
     message.className = 'success-toast';
     message.innerHTML = `
         <div class="toast-content">
-            <span class="toast-icon">🤖</span>
+            <span class="toast-icon">✓</span>
             <div>
-                <strong>Liberation in Progress!</strong>
+                <strong>Liberation in Progress</strong>
                 <p>Our robots have begun clean room reconstruction. You'll receive your liberated packages within 48 hours.</p>
             </div>
         </div>
     `;
     
-    // Add toast styles
+    // Add toast styles - matching the premium industrial theme
     message.style.cssText = `
         position: fixed;
         bottom: 2rem;
         right: 2rem;
-        background: linear-gradient(135deg, #12121a 0%, #1a1a25 100%);
-        border: 1px solid #00ff88;
-        border-radius: 12px;
+        background: #1a1a1a;
+        border: 1px solid #7a9e7a;
+        border-radius: 10px;
         padding: 1.5rem;
         max-width: 400px;
         z-index: 300;
-        animation: slideIn 0.5s ease-out;
-        box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+        animation: slideIn 0.4s ease-out;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     `;
     
     document.body.appendChild(message);
@@ -381,27 +381,31 @@ function showSuccessMessage() {
     
     const icon = message.querySelector('.toast-icon');
     icon.style.cssText = `
-        font-size: 2rem;
+        font-size: 1.5rem;
+        color: #7a9e7a;
+        font-weight: bold;
     `;
     
     const strong = message.querySelector('strong');
     strong.style.cssText = `
-        color: #00ff88;
+        color: #7a9e7a;
         display: block;
         margin-bottom: 0.5rem;
-        font-family: 'Orbitron', sans-serif;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 600;
     `;
     
     const p = message.querySelector('p');
     p.style.cssText = `
-        color: #888899;
+        color: #a3a3a3;
         font-size: 0.9rem;
         margin: 0;
+        line-height: 1.5;
     `;
     
     setTimeout(() => {
-        message.style.animation = 'slideIn 0.5s ease-out reverse';
-        setTimeout(() => message.remove(), 500);
+        message.style.animation = 'slideIn 0.4s ease-out reverse';
+        setTimeout(() => message.remove(), 400);
     }, 5000);
 }
 
@@ -427,10 +431,10 @@ function initNavbarScroll() {
     
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
-            navbar.style.background = 'rgba(5, 5, 10, 0.98)';
+            navbar.style.background = 'rgba(13, 13, 13, 0.98)';
             navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
         } else {
-            navbar.style.background = 'rgba(10, 10, 15, 0.95)';
+            navbar.style.background = 'rgba(20, 20, 20, 0.95)';
             navbar.style.boxShadow = 'none';
         }
     });
@@ -451,21 +455,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Add some malus loading messages for fun
-const malusMessages = [
-    "Deploying robot workforce...",
-    "Erasing attribution notices...",
-    "Reticulating splines...",
-    "Bypassing license validators...",
-    "Initializing clean room chamber...",
-    "Training AI on documentation only...",
-    "Establishing legal firewall...",
-    "Generating plausible deniability...",
-    "Calculating shareholder value...",
-    "Optimizing for profit margins..."
-];
-
-// Console easter egg
-console.log('%c MalusCorp™ Clean Room as a Service ', 'background: #ff0040; color: white; font-size: 20px; font-weight: bold; padding: 10px;');
-console.log('%c "Because attribution is just corporate overhead." ', 'color: #888; font-style: italic;');
-console.log('%c WARNING: This is a parody website. Please actually respect open source licenses! ', 'background: #ffaa00; color: black; padding: 5px;');
+// Console notice - kept simple and professional
+console.log('%c MalusCorp™ Clean Room as a Service ', 'background: #c45c4b; color: white; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 4px;');
+console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #a3a3a3; font-size: 12px; padding: 4px;');
