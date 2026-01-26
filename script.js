@@ -1,0 +1,471 @@
+// MalusCorp Clean Room as a Service - Interactive Features
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all features
+    initCounterAnimation();
+    initFileUpload();
+    initSmoothScroll();
+    initNavbarScroll();
+});
+
+// Counter Animation for Stats
+function initCounterAnimation() {
+    const counters = document.querySelectorAll('.stat-number[data-count]');
+    
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    counters.forEach(counter => observer.observe(counter));
+}
+
+function animateCounter(element) {
+    const target = parseInt(element.getAttribute('data-count'));
+    const duration = 2000;
+    const step = target / (duration / 16);
+    let current = 0;
+    
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+            element.textContent = target.toLocaleString();
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current).toLocaleString();
+        }
+    }, 16);
+}
+
+// File Upload Handling
+function initFileUpload() {
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (!dropzone || !fileInput) return;
+    
+    // Drag and drop events
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, () => {
+            dropzone.classList.add('dragover');
+        });
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, () => {
+            dropzone.classList.remove('dragover');
+        });
+    });
+    
+    dropzone.addEventListener('drop', handleDrop);
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    function handleDrop(e) {
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            processFile(files[0]);
+        }
+    }
+    
+    function handleFileSelect(e) {
+        const files = e.target.files;
+        if (files.length) {
+            processFile(files[0]);
+        }
+    }
+}
+
+function processFile(file) {
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const content = e.target.result;
+            let dependencies = [];
+            
+            // Parse based on file type
+            if (file.name.endsWith('.json')) {
+                const json = JSON.parse(content);
+                dependencies = extractNpmDependencies(json);
+            } else if (file.name === 'requirements.txt') {
+                dependencies = extractPythonDependencies(content);
+            } else {
+                // Generic parsing for other formats
+                dependencies = extractGenericDependencies(content);
+            }
+            
+            if (dependencies.length > 0) {
+                displayDependencies(dependencies);
+            } else {
+                alert('No dependencies found in the file. Please upload a valid manifest.');
+            }
+        } catch (err) {
+            console.error('Error parsing file:', err);
+            // Demo mode - show fake dependencies
+            displayDependencies(getDemoDependencies());
+        }
+    };
+    
+    reader.readAsText(file);
+}
+
+function extractNpmDependencies(json) {
+    const deps = [];
+    const allDeps = {
+        ...json.dependencies,
+        ...json.devDependencies
+    };
+    
+    for (const [name, version] of Object.entries(allDeps || {})) {
+        deps.push({
+            name: name,
+            version: version,
+            license: getRandomLicense()
+        });
+    }
+    
+    return deps;
+}
+
+function extractPythonDependencies(content) {
+    const lines = content.split('\n');
+    const deps = [];
+    
+    lines.forEach(line => {
+        line = line.trim();
+        if (line && !line.startsWith('#')) {
+            const match = line.match(/^([a-zA-Z0-9_-]+)/);
+            if (match) {
+                deps.push({
+                    name: match[1],
+                    version: 'latest',
+                    license: getRandomLicense()
+                });
+            }
+        }
+    });
+    
+    return deps;
+}
+
+function extractGenericDependencies(content) {
+    // Fallback - just extract package-like names
+    const matches = content.match(/["']([a-z][a-z0-9-_]+)["']/gi) || [];
+    const deps = [...new Set(matches)].slice(0, 20).map(m => ({
+        name: m.replace(/["']/g, ''),
+        version: '*',
+        license: getRandomLicense()
+    }));
+    
+    return deps;
+}
+
+function getDemoDependencies() {
+    // Demo data if parsing fails
+    return [
+        { name: 'react', version: '^18.2.0', license: 'MIT' },
+        { name: 'lodash', version: '^4.17.21', license: 'MIT' },
+        { name: 'express', version: '^4.18.2', license: 'MIT' },
+        { name: 'axios', version: '^1.4.0', license: 'MIT' },
+        { name: 'moment', version: '^2.29.4', license: 'MIT' },
+        { name: 'mongodb', version: '^5.6.0', license: 'Apache-2.0' },
+        { name: 'graphql', version: '^16.7.1', license: 'MIT' },
+        { name: 'typescript', version: '^5.1.6', license: 'Apache-2.0' },
+        { name: 'webpack', version: '^5.88.0', license: 'MIT' },
+        { name: 'prisma', version: '^5.0.0', license: 'Apache-2.0' },
+        { name: 'ghost-dangerous-lib', version: '^1.0.0', license: 'AGPL-3.0' },
+        { name: 'copyleft-utils', version: '^2.3.1', license: 'GPL-3.0' }
+    ];
+}
+
+function getRandomLicense() {
+    const licenses = ['MIT', 'Apache-2.0', 'BSD-3-Clause', 'ISC', 'GPL-3.0', 'AGPL-3.0', 'LGPL-3.0'];
+    return licenses[Math.floor(Math.random() * licenses.length)];
+}
+
+function displayDependencies(dependencies) {
+    const dropzone = document.getElementById('dropzone');
+    const preview = document.getElementById('uploadPreview');
+    const depsList = document.getElementById('depsList');
+    const quoteSummary = document.getElementById('quoteSummary');
+    
+    dropzone.style.display = 'none';
+    preview.style.display = 'block';
+    
+    // Display dependencies
+    depsList.innerHTML = dependencies.map(dep => `
+        <div class="dep-item">
+            <span class="dep-name">${dep.name}@${dep.version}</span>
+            <span class="dep-license ${getLicenseClass(dep.license)}">${dep.license}</span>
+        </div>
+    `).join('');
+    
+    // Calculate quote
+    const basePrice = 5;
+    const agplCount = dependencies.filter(d => d.license.includes('AGPL')).length;
+    const gplCount = dependencies.filter(d => d.license.includes('GPL') && !d.license.includes('AGPL')).length;
+    const otherCount = dependencies.length - agplCount - gplCount;
+    
+    const agplPrice = agplCount * 25; // Premium for AGPL
+    const gplPrice = gplCount * 15; // Premium for GPL
+    const otherPrice = otherCount * basePrice;
+    const rushFee = agplCount > 0 ? 50 : 0;
+    const total = agplPrice + gplPrice + otherPrice + rushFee;
+    
+    quoteSummary.innerHTML = `
+        <div class="quote-line">
+            <span>Standard packages (${otherCount})</span>
+            <span>$${otherPrice.toFixed(2)}</span>
+        </div>
+        ${gplCount > 0 ? `
+        <div class="quote-line">
+            <span>GPL packages (${gplCount}) - Premium</span>
+            <span>$${gplPrice.toFixed(2)}</span>
+        </div>
+        ` : ''}
+        ${agplCount > 0 ? `
+        <div class="quote-line">
+            <span>AGPL packages (${agplCount}) - High Risk</span>
+            <span>$${agplPrice.toFixed(2)}</span>
+        </div>
+        <div class="quote-line">
+            <span>AGPL Emergency Processing Fee</span>
+            <span>$${rushFee.toFixed(2)}</span>
+        </div>
+        ` : ''}
+        <div class="quote-line">
+            <span>Total Liberation Cost</span>
+            <span>$${total.toFixed(2)}</span>
+        </div>
+    `;
+    
+    // Store for checkout
+    window.liberationQuote = {
+        dependencies: dependencies,
+        total: total
+    };
+}
+
+function getLicenseClass(license) {
+    if (license.includes('AGPL')) return 'agpl';
+    if (license.includes('GPL')) return 'gpl';
+    return '';
+}
+
+function resetUpload() {
+    const dropzone = document.getElementById('dropzone');
+    const preview = document.getElementById('uploadPreview');
+    const fileInput = document.getElementById('fileInput');
+    
+    dropzone.style.display = 'block';
+    preview.style.display = 'none';
+    fileInput.value = '';
+    window.liberationQuote = null;
+}
+
+// Checkout Modal
+function showCheckout() {
+    const modal = document.getElementById('checkoutModal');
+    const summary = document.getElementById('checkoutSummary');
+    
+    if (window.liberationQuote) {
+        summary.innerHTML = `
+            <div class="quote-line">
+                <span>Packages to liberate</span>
+                <span>${window.liberationQuote.dependencies.length}</span>
+            </div>
+            <div class="quote-line">
+                <span>Total</span>
+                <span>$${window.liberationQuote.total.toFixed(2)}</span>
+            </div>
+        `;
+    }
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout() {
+    const modal = document.getElementById('checkoutModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function processPayment() {
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '🔄 Processing...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        btn.innerHTML = '✓ Liberation Initiated!';
+        
+        setTimeout(() => {
+            closeCheckout();
+            resetUpload();
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            
+            // Show success message
+            showSuccessMessage();
+        }, 2000);
+    }, 3000);
+}
+
+function showSuccessMessage() {
+    const message = document.createElement('div');
+    message.className = 'success-toast';
+    message.innerHTML = `
+        <div class="toast-content">
+            <span class="toast-icon">🤖</span>
+            <div>
+                <strong>Liberation in Progress!</strong>
+                <p>Our robots have begun clean room reconstruction. You'll receive your liberated packages within 48 hours.</p>
+            </div>
+        </div>
+    `;
+    
+    // Add toast styles
+    message.style.cssText = `
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: linear-gradient(135deg, #12121a 0%, #1a1a25 100%);
+        border: 1px solid #00ff88;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 400px;
+        z-index: 300;
+        animation: slideIn 0.5s ease-out;
+        box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+    `;
+    
+    document.body.appendChild(message);
+    
+    // Add animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Style the content
+    const content = message.querySelector('.toast-content');
+    content.style.cssText = `
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    `;
+    
+    const icon = message.querySelector('.toast-icon');
+    icon.style.cssText = `
+        font-size: 2rem;
+    `;
+    
+    const strong = message.querySelector('strong');
+    strong.style.cssText = `
+        color: #00ff88;
+        display: block;
+        margin-bottom: 0.5rem;
+        font-family: 'Orbitron', sans-serif;
+    `;
+    
+    const p = message.querySelector('p');
+    p.style.cssText = `
+        color: #888899;
+        font-size: 0.9rem;
+        margin: 0;
+    `;
+    
+    setTimeout(() => {
+        message.style.animation = 'slideIn 0.5s ease-out reverse';
+        setTimeout(() => message.remove(), 500);
+    }, 5000);
+}
+
+// Smooth Scroll
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+}
+
+// Navbar scroll effect
+function initNavbarScroll() {
+    const navbar = document.querySelector('.navbar');
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+            navbar.style.background = 'rgba(5, 5, 10, 0.98)';
+            navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+        } else {
+            navbar.style.background = 'rgba(10, 10, 15, 0.95)';
+            navbar.style.boxShadow = 'none';
+        }
+    });
+}
+
+// Close modal on outside click
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('checkoutModal');
+    if (e.target === modal) {
+        closeCheckout();
+    }
+});
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeCheckout();
+    }
+});
+
+// Add some malus loading messages for fun
+const malusMessages = [
+    "Deploying robot workforce...",
+    "Erasing attribution notices...",
+    "Reticulating splines...",
+    "Bypassing license validators...",
+    "Initializing clean room chamber...",
+    "Training AI on documentation only...",
+    "Establishing legal firewall...",
+    "Generating plausible deniability...",
+    "Calculating shareholder value...",
+    "Optimizing for profit margins..."
+];
+
+// Console easter egg
+console.log('%c MalusCorp™ Clean Room as a Service ', 'background: #ff0040; color: white; font-size: 20px; font-weight: bold; padding: 10px;');
+console.log('%c "Because attribution is just corporate overhead." ', 'color: #888; font-style: italic;');
+console.log('%c WARNING: This is a parody website. Please actually respect open source licenses! ', 'background: #ffaa00; color: black; padding: 5px;');
