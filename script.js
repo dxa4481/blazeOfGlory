@@ -460,5 +460,5 @@ document.addEventListener('keydown', function(e) {
 
 // Console notice - branding style
 console.log('%c MALUS - CLEAN ROOM AS A SERVICE ', 'background: #C41E3A; color: white; font-size: 11px; font-weight: 600; padding: 5px 8px; font-family: monospace;');
-console.log('%c Be Evil ', 'color: #C41E3A; font-size: 10px; padding: 3px; font-family: monospace;');
+console.log('%c Liberate Open Source ', 'color: #C41E3A; font-size: 10px; padding: 3px; font-family: monospace;');
 console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #666666; font-size: 10px; padding: 3px; font-family: monospace;');

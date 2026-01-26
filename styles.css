@@ -501,10 +501,30 @@ body {
     background: var(--bg-panel);
     border: 1px solid var(--neutral-gray);
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     width: 240px;
     position: relative;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Turd stain overlay on input block */
+.input-block {
+    overflow: hidden;
+}
+
+.turd-stain {
+    position: absolute;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.75;
+    mix-blend-mode: multiply;
+    transform: rotate(-5deg);
 }
 
 .code-header {
@@ -664,8 +684,8 @@ section {
 
 .problems-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1.5rem;
 }
 
 /* MACHINE HOUSING CARD */
@@ -678,6 +698,8 @@ section {
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     position: relative;
+    width: 100%;
+    max-width: 100%;
 }
 
 .problem-card:hover {
@@ -1292,8 +1314,8 @@ section {
 
 .pricing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
@@ -1306,6 +1328,8 @@ section {
     transition: all 0.3s ease;
     position: relative;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 100%;
 }
 
 .price-card:hover {
@@ -1460,8 +1484,8 @@ section {
 /* TESTIMONIALS */
 .testimonials-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1.5rem;
     margin-bottom: 2.5rem;
 }
 
@@ -1475,6 +1499,8 @@ section {
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     position: relative;
+    width: 100%;
+    max-width: 100%;
 }
 
 .testimonial-card::before {
@@ -1571,8 +1597,8 @@ section {
 
 .faq-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 0.875rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 1rem;
 }
 
 .faq-item {
@@ -1583,6 +1609,8 @@ section {
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
+    width: 100%;
+    max-width: 100%;
 }
 
 .faq-item:hover {
@@ -1653,7 +1681,7 @@ section {
 
 .footer-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
     gap: 2rem;
     margin-bottom: 2rem;
 }
@@ -1880,8 +1908,24 @@ section {
         grid-template-columns: 1fr;
     }
     
+    .problems-grid,
+    .pricing-grid,
+    .testimonials-grid,
+    .faq-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+        gap: 1.25rem;
+    }
+    
     .footer-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .problems-grid,
+    .pricing-grid,
+    .testimonials-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
     }
 }
 
@@ -1907,19 +1951,6 @@ section {
     .hero h1 {
         font-size: 1.6rem;
     }
-}
-
-@media (max-width: 480px) {
-    .malus-header {
-        height: 15vh;
-        min-height: 140px;
-        padding: 1rem;
-    }
-    
-    .malus-divider {
-        width: 60px;
-    }
-}
     
     .section-title {
         font-size: 1.3rem;
@@ -1941,8 +1972,18 @@ section {
         grid-template-columns: 1fr;
     }
     
-    .pricing-grid {
+    /* Make all grid sections single column on mobile */
+    .problems-grid,
+    .pricing-grid,
+    .testimonials-grid,
+    .faq-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .price-card {
+        width: 100%;
+        max-width: 100%;
     }
     
     .price-card.featured {
@@ -1961,6 +2002,7 @@ section {
     .footer-grid {
         grid-template-columns: 1fr;
         text-align: center;
+        gap: 1.5rem;
     }
     
     .cta-buttons {
@@ -1970,6 +2012,36 @@ section {
     
     .form-row {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .malus-header {
+        height: 15vh;
+        min-height: 140px;
+        padding: 1rem;
+    }
+    
+    .malus-divider {
+        width: 60px;
+    }
+    
+    .problems-grid,
+    .pricing-grid,
+    .testimonials-grid,
+    .faq-grid {
+        gap: 0.875rem;
+    }
+    
+    .price-card,
+    .problem-card,
+    .testimonial-card,
+    .faq-item {
+        padding: 1rem;
+    }
+    
+    .container {
+        padding: 0 1rem;
     }
 }
 
