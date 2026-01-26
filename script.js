@@ -1,4 +1,4 @@
-// MalusCorp Clean Room as a Service - Interactive Features
+// MalusCorp Clean Room as a Service - Industrial Interface
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all features
@@ -338,25 +338,25 @@ function showSuccessMessage() {
         <div class="toast-content">
             <span class="toast-icon">✓</span>
             <div>
-                <strong>Liberation in Progress</strong>
+                <strong>LIBERATION IN PROGRESS</strong>
                 <p>Our robots have begun clean room reconstruction. You'll receive your liberated packages within 48 hours.</p>
             </div>
         </div>
     `;
     
-    // Add toast styles - matching the premium industrial theme with warm glow
+    // Industrial panel toast styling - warehouse lit
     message.style.cssText = `
         position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        background: linear-gradient(145deg, #222225 0%, #1a1a1c 50%, #1f1f22 100%);
-        border: 1px solid #6b9b6b;
-        border-radius: 10px;
-        padding: 1.5rem;
-        max-width: 400px;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        background: #282e36;
+        border: 1px solid #5a6d5a;
+        border-radius: 1px;
+        padding: 1rem;
+        max-width: 360px;
         z-index: 300;
-        animation: slideIn 0.4s ease-out;
-        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(107, 155, 107, 0.3);
+        animation: slideIn 0.25s ease-out;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.06);
     `;
     
     document.body.appendChild(message);
@@ -376,38 +376,39 @@ function showSuccessMessage() {
     content.style.cssText = `
         display: flex;
         align-items: flex-start;
-        gap: 1rem;
+        gap: 0.875rem;
     `;
     
     const icon = message.querySelector('.toast-icon');
     icon.style.cssText = `
-        font-size: 1.5rem;
-        color: #6b9b6b;
+        font-size: 1.1rem;
+        color: #6a7d6a;
         font-weight: bold;
-        text-shadow: 0 0 10px rgba(107, 155, 107, 0.5);
+        flex-shrink: 0;
     `;
     
     const strong = message.querySelector('strong');
     strong.style.cssText = `
-        color: #6b9b6b;
+        color: #6a7d6a;
         display: block;
-        margin-bottom: 0.5rem;
-        font-family: 'Manrope', sans-serif;
-        font-weight: 600;
-        text-shadow: 0 0 10px rgba(107, 155, 107, 0.3);
+        margin-bottom: 0.3rem;
+        font-family: 'IBM Plex Mono', monospace;
+        font-weight: 500;
+        font-size: 0.6rem;
+        letter-spacing: 0.12em;
     `;
     
     const p = message.querySelector('p');
     p.style.cssText = `
-        color: #9a9897;
-        font-size: 0.9rem;
+        color: #a8a4a0;
+        font-size: 0.8rem;
         margin: 0;
         line-height: 1.5;
     `;
     
     setTimeout(() => {
-        message.style.animation = 'slideIn 0.4s ease-out reverse';
-        setTimeout(() => message.remove(), 400);
+        message.style.animation = 'slideIn 0.25s ease-out reverse';
+        setTimeout(() => message.remove(), 250);
     }, 5000);
 }
 
@@ -433,10 +434,10 @@ function initNavbarScroll() {
     
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
-            navbar.style.background = 'rgba(18, 18, 20, 0.98)';
-            navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.4)';
+            navbar.style.background = '#1a1e24';
+            navbar.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.35)';
         } else {
-            navbar.style.background = 'rgba(18, 18, 20, 0.92)';
+            navbar.style.background = '#1a1e24';
             navbar.style.boxShadow = 'none';
         }
     });
@@ -457,6 +458,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Console notice - kept simple and professional
-console.log('%c MalusCorp™ Clean Room as a Service ', 'background: #e85a4f; color: white; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 4px;');
-console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #9a9897; font-size: 12px; padding: 4px;');
+// Console notice - industrial style
+console.log('%c MALUSCORP™ CLEAN ROOM AS A SERVICE ', 'background: #c43c35; color: white; font-size: 11px; font-weight: 600; padding: 5px 8px; font-family: monospace;');
+console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #787470; font-size: 10px; padding: 3px; font-family: monospace;');
