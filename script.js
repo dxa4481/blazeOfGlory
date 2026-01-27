@@ -434,10 +434,10 @@ function initNavbarScroll() {
     
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
-            navbar.style.background = '#1a1e24';
-            navbar.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.35)';
+            navbar.style.background = '#FFFFFF';
+            navbar.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
         } else {
-            navbar.style.background = '#1a1e24';
+            navbar.style.background = '#FFFFFF';
             navbar.style.boxShadow = 'none';
         }
     });
@@ -458,6 +458,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Console notice - industrial style
-console.log('%c MALUSCORP™ CLEAN ROOM AS A SERVICE ', 'background: #c43c35; color: white; font-size: 11px; font-weight: 600; padding: 5px 8px; font-family: monospace;');
-console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #787470; font-size: 10px; padding: 3px; font-family: monospace;');
+// Console notice - branding style
+console.log('%c MALUS - CLEAN ROOM AS A SERVICE ', 'background: #C41E3A; color: white; font-size: 11px; font-weight: 600; padding: 5px 8px; font-family: monospace;');
+console.log('%c Liberate Open Source ', 'color: #C41E3A; font-size: 10px; padding: 3px; font-family: monospace;');
+console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #666666; font-size: 10px; padding: 3px; font-family: monospace;');
