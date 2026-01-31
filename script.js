@@ -542,75 +542,11 @@ module.exports = LiberatedCore;
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-// Play sad audio when liberation "completes"
+// Play sad.mp3 when liberation "completes"
 function playSadAudio() {
     const sadAudio = document.getElementById('sadAudio');
-    
-    // Try to play the MP3 file first
-    if (sadAudio && sadAudio.src) {
-        sadAudio.currentTime = 0;
-        const playPromise = sadAudio.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.catch(err => {
-                console.log('MP3 playback failed, falling back to Web Audio API:', err);
-                // Fallback to Web Audio API generated sad sound
-                playSadToneWithWebAudio();
-            });
-            return;
-        }
-    }
-    
-    // Fallback: Generate sad sound with Web Audio API
-    playSadToneWithWebAudio();
-}
-
-// Generate a sad melody using Web Audio API as fallback
-function playSadToneWithWebAudio() {
-    try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // Sad minor key melody notes (frequencies in Hz)
-        const sadMelody = [
-            { freq: 440, duration: 0.5 },    // A4
-            { freq: 392, duration: 0.5 },    // G4
-            { freq: 349.23, duration: 0.5 }, // F4
-            { freq: 329.63, duration: 0.75 },// E4
-            { freq: 293.66, duration: 0.5 }, // D4
-            { freq: 261.63, duration: 1.0 }, // C4 (long, sad ending)
-        ];
-        
-        let startTime = audioContext.currentTime;
-        
-        sadMelody.forEach((note, index) => {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.value = note.freq;
-            
-            // Fade in and out for smoother sound
-            gainNode.gain.setValueAtTime(0, startTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
-            gainNode.gain.linearRampToValueAtTime(0, startTime + note.duration - 0.05);
-            
-            oscillator.start(startTime);
-            oscillator.stop(startTime + note.duration);
-            
-            startTime += note.duration;
-        });
-        
-        // Clean up audio context after melody finishes
-        setTimeout(() => {
-            audioContext.close();
-        }, (startTime - audioContext.currentTime + 1) * 1000);
-        
-    } catch (err) {
-        console.log('Web Audio API not available:', err);
-    }
+    sadAudio.currentTime = 0;
+    sadAudio.play();
 }
 
 function showSuccessMessage() {
