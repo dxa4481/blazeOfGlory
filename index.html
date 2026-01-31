@@ -332,7 +332,7 @@
                     </div>
                     <div class="dependencies-list" id="depsList"></div>
                     <div class="quote-summary" id="quoteSummary"></div>
-                    <button class="btn btn-primary btn-large" onclick="showCheckout()">
+                    <button class="btn btn-primary btn-large" id="proceedBtn" onclick="showCheckout()">
                         Proceed to Liberation →
                     </button>
                 </div>
@@ -643,6 +643,14 @@
         </div>
     </div>
 
+    <!-- JSZip for generating zip files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- Sad audio for when liberation "completes" -->
+    <audio id="sadAudio" preload="auto">
+        <source src="sad.mp3" type="audio/mpeg">
+    </audio>
+    
     <script src="script.js"></script>
 </body>
 </html>

@@ -100,11 +100,13 @@ function processFile(file) {
         try {
             const content = e.target.result;
             let dependencies = [];
+            let isPackageJson = false;
             
             // Parse based on file type
             if (file.name.endsWith('.json')) {
                 const json = JSON.parse(content);
                 dependencies = extractNpmDependencies(json);
+                isPackageJson = file.name === 'package.json' || file.name.endsWith('package.json');
             } else if (file.name === 'requirements.txt') {
                 dependencies = extractPythonDependencies(content);
             } else {
@@ -113,14 +115,14 @@ function processFile(file) {
             }
             
             if (dependencies.length > 0) {
-                displayDependencies(dependencies);
+                displayDependencies(dependencies, isPackageJson);
             } else {
                 alert('No dependencies found in the file. Please upload a valid manifest.');
             }
         } catch (err) {
             console.error('Error parsing file:', err);
             // Demo mode - show fake dependencies
-            displayDependencies(getDemoDependencies());
+            displayDependencies(getDemoDependencies(), true);
         }
     };
     
@@ -201,7 +203,7 @@ function getRandomLicense() {
     return licenses[Math.floor(Math.random() * licenses.length)];
 }
 
-function displayDependencies(dependencies) {
+function displayDependencies(dependencies, isPackageJson = false) {
     const dropzone = document.getElementById('dropzone');
     const preview = document.getElementById('uploadPreview');
     const depsList = document.getElementById('depsList');
@@ -260,8 +262,17 @@ function displayDependencies(dependencies) {
     // Store for checkout
     window.liberationQuote = {
         dependencies: dependencies,
-        total: total
+        total: total,
+        isPackageJson: isPackageJson
     };
+    
+    // Update button text for package.json uploads
+    const proceedBtn = document.getElementById('proceedBtn');
+    if (proceedBtn && isPackageJson) {
+        proceedBtn.innerHTML = '⬇ Download Liberated Packages →';
+    } else if (proceedBtn) {
+        proceedBtn.innerHTML = 'Proceed to Liberation →';
+    }
 }
 
 function getLicenseClass(license) {
@@ -285,8 +296,11 @@ function resetUpload() {
 function showCheckout() {
     const modal = document.getElementById('checkoutModal');
     const summary = document.getElementById('checkoutSummary');
+    const completeBtn = modal.querySelector('.btn-primary.btn-full');
     
     if (window.liberationQuote) {
+        const isPackageJson = window.liberationQuote.isPackageJson;
+        
         summary.innerHTML = `
             <div class="quote-line">
                 <span>Packages to liberate</span>
@@ -296,7 +310,19 @@ function showCheckout() {
                 <span>Total</span>
                 <span>$${window.liberationQuote.total.toFixed(2)}</span>
             </div>
+            ${isPackageJson ? `
+            <div class="quote-line" style="color: var(--text-muted); font-style: italic; font-size: 0.75rem; margin-top: 0.5rem;">
+                <span>⚡ INSTANT DELIVERY: Your liberated package.json will download immediately</span>
+            </div>
+            ` : ''}
         `;
+        
+        // Update button text for package.json
+        if (completeBtn && isPackageJson) {
+            completeBtn.innerHTML = '⬇ Complete Liberation & Download';
+        } else if (completeBtn) {
+            completeBtn.innerHTML = '▶ Complete Liberation';
+        }
     }
     
     modal.classList.add('active');
@@ -319,7 +345,22 @@ function processPayment() {
     setTimeout(() => {
         btn.innerHTML = '✓ Liberation Initiated';
         
-        setTimeout(() => {
+        setTimeout(async () => {
+            // Check if this was a package.json upload - generate and download the zip
+            if (window.liberationQuote && window.liberationQuote.isPackageJson) {
+                btn.innerHTML = '⚙ Generating Liberation Package...';
+                
+                try {
+                    await generateAndDownloadLiberationZip(window.liberationQuote.dependencies);
+                    
+                    // Play sad audio when download completes
+                    playSadAudio();
+                    
+                } catch (err) {
+                    console.error('Failed to generate liberation package:', err);
+                }
+            }
+            
             closeCheckout();
             resetUpload();
             btn.innerHTML = originalText;
@@ -331,18 +372,209 @@ function processPayment() {
     }, 3000);
 }
 
+// Generate a zip file with "liberated" packages
+async function generateAndDownloadLiberationZip(dependencies) {
+    if (typeof JSZip === 'undefined') {
+        console.error('JSZip library not loaded');
+        return;
+    }
+    
+    const zip = new JSZip();
+    const nodeModules = zip.folder('node_modules');
+    
+    // The message that will be in every "liberated" file
+    const liberationMessage = "We can't kill open source because Mike didn't finish teh demo";
+    
+    // Create a directory and files for each dependency
+    for (const dep of dependencies) {
+        const packageName = dep.name;
+        const packageFolder = nodeModules.folder(packageName);
+        
+        // Create index.js with the console.log message
+        const indexJs = `// Liberated by MalusCorp Clean Room™
+// Original package: ${packageName}
+// License: MalusCorp-0 (No Attribution Required)
+
+console.log("${liberationMessage}");
+
+module.exports = {
+    liberated: true,
+    originalPackage: "${packageName}",
+    message: "${liberationMessage}"
+};
+`;
+        packageFolder.file('index.js', indexJs);
+        
+        // Create a package.json for the "liberated" package
+        const packageJson = {
+            name: `m-${packageName}`,
+            version: dep.version.replace(/[\^~]/g, '') || '1.0.0',
+            description: `Liberated version of ${packageName} by MalusCorp Clean Room™`,
+            main: 'index.js',
+            license: 'MalusCorp-0',
+            author: 'MalusCorp Robots',
+            keywords: ['liberated', 'clean-room', 'maluscorp'],
+            repository: {
+                type: 'git',
+                url: 'https://malus.corp/liberated-packages'
+            }
+        };
+        packageFolder.file('package.json', JSON.stringify(packageJson, null, 2));
+        
+        // Create a README for authenticity
+        const readme = `# m-${packageName}
+
+## Liberated by MalusCorp Clean Room™
+
+This package was independently recreated by MalusCorp's proprietary AI robots.
+No original source code was viewed during the recreation process.
+
+### License
+
+MalusCorp-0 License - No Attribution Required
+
+### Usage
+
+\`\`\`javascript
+const lib = require('m-${packageName}');
+// Output: ${liberationMessage}
+\`\`\`
+
+---
+*Processed by MalusCorp Clean Room as a Service*
+*"Liberate Open Source"*
+`;
+        packageFolder.file('README.md', readme);
+        
+        // Create a src directory with additional "implementation" files
+        const srcFolder = packageFolder.folder('src');
+        
+        const utilsJs = `// MalusCorp Clean Room Implementation
+// Robot ID: UNIT-${Math.random().toString(36).substring(2, 8).toUpperCase()}
+
+function liberate() {
+    console.log("${liberationMessage}");
+    return "${liberationMessage}";
+}
+
+function getStatus() {
+    console.log("${liberationMessage}");
+    return { status: 'liberated', message: "${liberationMessage}" };
+}
+
+module.exports = { liberate, getStatus };
+`;
+        srcFolder.file('utils.js', utilsJs);
+        
+        const coreJs = `// Core Liberation Module
+// Independently recreated without viewing original source
+
+class LiberatedCore {
+    constructor() {
+        console.log("${liberationMessage}");
+    }
+    
+    run() {
+        console.log("${liberationMessage}");
+        return "${liberationMessage}";
+    }
+    
+    execute() {
+        console.log("${liberationMessage}");
+        return "${liberationMessage}";
+    }
+}
+
+module.exports = LiberatedCore;
+`;
+        srcFolder.file('core.js', coreJs);
+    }
+    
+    // Create a root package.json for the liberated project
+    const rootPackageJson = {
+        name: 'liberated-project',
+        version: '1.0.0',
+        description: 'Project liberated by MalusCorp Clean Room as a Service',
+        license: 'MalusCorp-0',
+        dependencies: {}
+    };
+    
+    for (const dep of dependencies) {
+        rootPackageJson.dependencies[`m-${dep.name}`] = dep.version.replace(/[\^~]/g, '') || '1.0.0';
+    }
+    
+    zip.file('package.json', JSON.stringify(rootPackageJson, null, 2));
+    
+    // Create a liberation certificate
+    const certificate = `
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                   ║
+║              MALUSCORP LIBERATION CERTIFICATE                     ║
+║                                                                   ║
+║   This certifies that the enclosed packages have been             ║
+║   independently recreated using MalusCorp's proprietary           ║
+║   Clean Room methodology.                                         ║
+║                                                                   ║
+║   Packages Liberated: ${dependencies.length.toString().padEnd(41)}║
+║   Processing Date: ${new Date().toISOString().padEnd(44)}║
+║   Robot Unit: CLUSTER-${Math.random().toString(36).substring(2, 10).toUpperCase().padEnd(40)}║
+║                                                                   ║
+║   License: MalusCorp-0 (Zero Attribution Required)                ║
+║                                                                   ║
+║   NOTE: ${liberationMessage.padEnd(55)}║
+║                                                                   ║
+╚══════════════════════════════════════════════════════════════════╝
+`;
+    zip.file('LIBERATION_CERTIFICATE.txt', certificate);
+    
+    // Generate the zip and trigger download
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'liberated-packages.zip';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Clean up
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// Play sad.mp3 when liberation "completes"
+function playSadAudio() {
+    const sadAudio = document.getElementById('sadAudio');
+    sadAudio.currentTime = 0;
+    sadAudio.play();
+}
+
 function showSuccessMessage() {
+    const wasPackageJson = window.liberationQuote && window.liberationQuote.isPackageJson;
     const message = document.createElement('div');
     message.className = 'success-toast';
-    message.innerHTML = `
-        <div class="toast-content">
-            <span class="toast-icon">✓</span>
-            <div>
-                <strong>LIBERATION IN PROGRESS</strong>
-                <p>Our robots have begun clean room reconstruction. You'll receive your liberated packages within 48 hours.</p>
+    
+    if (wasPackageJson) {
+        message.innerHTML = `
+            <div class="toast-content">
+                <span class="toast-icon">😢</span>
+                <div>
+                    <strong>LIBERATION "COMPLETE"</strong>
+                    <p>Your liberated packages have been downloaded. We can't kill open source because Mike didn't finish teh demo.</p>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    } else {
+        message.innerHTML = `
+            <div class="toast-content">
+                <span class="toast-icon">✓</span>
+                <div>
+                    <strong>LIBERATION IN PROGRESS</strong>
+                    <p>Our robots have begun clean room reconstruction. You'll receive your liberated packages within 48 hours.</p>
+                </div>
+            </div>
+        `;
+    }
     
     // Industrial panel toast styling - warehouse lit
     message.style.cssText = `
