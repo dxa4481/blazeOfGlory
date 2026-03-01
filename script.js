@@ -1,41 +1,117 @@
 // MalusCorp Clean Room as a Service - Industrial Interface
+//
+// Pay-first flow: upload package.json -> POST /api/quote -> display breakdown -> POST /api/checkout -> Stripe -> status page
+
+var STATUS_BUCKET_URL = window.STATUS_BUCKET_URL || '';
+var BACKEND_API_URL = window.BACKEND_API_URL || '';
+
+var _backendHealthy = null; // null = unknown, true/false after check
+
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+}
+
+// ── Notification helpers ──
+
+function showBanner(message, type) {
+    var banner = document.getElementById('apiStatusBanner');
+    var msg = document.getElementById('apiStatusMsg');
+    if (!banner || !msg) return;
+    msg.textContent = message;
+    banner.className = 'api-status-banner';
+    if (type === 'warning') banner.classList.add('warning');
+    banner.classList.remove('hidden');
+}
+
+function hideBanner() {
+    var banner = document.getElementById('apiStatusBanner');
+    if (banner) banner.classList.add('hidden');
+}
+
+function showInlineError(containerId, message, type) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    type = type || 'error';
+    container.innerHTML = '<div class="inline-notification ' + type + '">' + escapeHtml(message) + '</div>';
+    container.classList.remove('hidden');
+    container.style.display = '';
+}
+
+function clearInlineError(containerId) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+}
+
+// ── Health check ──
+
+function checkBackendHealth() {
+    if (!BACKEND_API_URL) {
+        _backendHealthy = false;
+        onBackendDown();
+        return;
+    }
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timeoutId = controller ? setTimeout(function() { controller.abort(); }, 5000) : null;
+
+    fetch(BACKEND_API_URL.replace(/\/$/, '') + '/health', {
+        signal: controller ? controller.signal : undefined
+    })
+    .then(function(res) {
+        clearTimeout(timeoutId);
+        if (res.ok) {
+            _backendHealthy = true;
+            hideBanner();
+        } else {
+            _backendHealthy = false;
+            onBackendDown();
+        }
+    })
+    .catch(function() {
+        clearTimeout(timeoutId);
+        _backendHealthy = false;
+        onBackendDown();
+    });
+}
+
+function onBackendDown() {
+    showBanner('Our liberation services are temporarily unavailable. Please try again later.', 'error');
+    var dropzone = document.getElementById('dropzone');
+    if (dropzone) dropzone.classList.add('disabled');
+}
+
+// ── Initialization ──
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all features
+    checkBackendHealth();
     initCounterAnimation();
     initFileUpload();
     initSmoothScroll();
     initNavbarScroll();
 });
 
-// Counter Animation for Stats
 function initCounterAnimation() {
-    const counters = document.querySelectorAll('.stat-number[data-count]');
-    
-    const observerOptions = {
-        threshold: 0.5,
-        rootMargin: '0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+    var counters = document.querySelectorAll('.stat-number[data-count]');
+    var observerOptions = { threshold: 0.5, rootMargin: '0px' };
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 animateCounter(entry.target);
                 observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
-    
-    counters.forEach(counter => observer.observe(counter));
+    counters.forEach(function(counter) { observer.observe(counter); });
 }
 
 function animateCounter(element) {
-    const target = parseInt(element.getAttribute('data-count'));
-    const duration = 2000;
-    const step = target / (duration / 16);
-    let current = 0;
-    
-    const timer = setInterval(() => {
+    var target = parseInt(element.getAttribute('data-count'));
+    var duration = 2000;
+    var step = target / (duration / 16);
+    var current = 0;
+    var timer = setInterval(function() {
         current += step;
         if (current >= target) {
             element.textContent = target.toLocaleString();
@@ -46,625 +122,264 @@ function animateCounter(element) {
     }, 16);
 }
 
-// File Upload Handling
 function initFileUpload() {
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.getElementById('fileInput');
-    
+    var dropzone = document.getElementById('dropzone');
+    var fileInput = document.getElementById('fileInput');
     if (!dropzone || !fileInput) return;
-    
-    // Drag and drop events
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropzone.addEventListener(eventName, preventDefaults, false);
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
+        dropzone.addEventListener(eventName, function(e) { e.preventDefault(); e.stopPropagation(); }, false);
     });
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropzone.addEventListener(eventName, () => {
-            dropzone.classList.add('dragover');
-        });
+    ['dragenter', 'dragover'].forEach(function(eventName) {
+        dropzone.addEventListener(eventName, function() { dropzone.classList.add('dragover'); });
     });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropzone.addEventListener(eventName, () => {
-            dropzone.classList.remove('dragover');
-        });
+    ['dragleave', 'drop'].forEach(function(eventName) {
+        dropzone.addEventListener(eventName, function() { dropzone.classList.remove('dragover'); });
     });
-    
-    dropzone.addEventListener('drop', handleDrop);
-    fileInput.addEventListener('change', handleFileSelect);
-    
-    function handleDrop(e) {
-        const files = e.dataTransfer.files;
-        if (files.length) {
-            processFile(files[0]);
-        }
-    }
-    
-    function handleFileSelect(e) {
-        const files = e.target.files;
-        if (files.length) {
-            processFile(files[0]);
-        }
-    }
+    dropzone.addEventListener('drop', function(e) {
+        var files = e.dataTransfer.files;
+        if (files.length) processFile(files[0]);
+    });
+    fileInput.addEventListener('change', function(e) {
+        var files = e.target.files;
+        if (files.length) processFile(files[0]);
+    });
 }
 
 function processFile(file) {
-    const reader = new FileReader();
-    
+    var reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const content = e.target.result;
-            let dependencies = [];
-            let isPackageJson = false;
-            
-            // Parse based on file type
-            if (file.name.endsWith('.json')) {
-                const json = JSON.parse(content);
-                dependencies = extractNpmDependencies(json);
-                isPackageJson = file.name === 'package.json' || file.name.endsWith('package.json');
-            } else if (file.name === 'requirements.txt') {
-                dependencies = extractPythonDependencies(content);
-            } else {
-                // Generic parsing for other formats
-                dependencies = extractGenericDependencies(content);
+            var content = e.target.result;
+            window.pendingPackageJsonRaw = content;
+            if (!file.name.endsWith('.json')) {
+                showInlineError('uploadError', 'Please upload a package.json file.', 'warning');
+                return;
             }
-            
-            if (dependencies.length > 0) {
-                displayDependencies(dependencies, isPackageJson);
-            } else {
-                alert('No dependencies found in the file. Please upload a valid manifest.');
+            var json = JSON.parse(content);
+            var deps = json.dependencies || {};
+            var devDeps = json.devDependencies || {};
+            var allNames = Object.keys(deps).concat(Object.keys(devDeps));
+            var uniqueNames = [];
+            var seen = {};
+            allNames.forEach(function(n) { if (!seen[n]) { seen[n] = true; uniqueNames.push(n); } });
+
+            if (uniqueNames.length === 0) {
+                showInlineError('uploadError', 'No dependencies found in package.json.', 'warning');
+                return;
             }
+
+            clearInlineError('uploadError');
+            showQuoteLoading(uniqueNames);
+            fetchServerQuote(json);
         } catch (err) {
             console.error('Error parsing file:', err);
-            // Demo mode - show fake dependencies
-            displayDependencies(getDemoDependencies(), true);
+            showInlineError('uploadError', 'Invalid JSON file. Please upload a valid package.json.');
         }
     };
-    
     reader.readAsText(file);
 }
 
-function extractNpmDependencies(json) {
-    const deps = [];
-    const allDeps = {
-        ...json.dependencies,
-        ...json.devDependencies
-    };
-    
-    for (const [name, version] of Object.entries(allDeps || {})) {
-        deps.push({
-            name: name,
-            version: version,
-            license: getRandomLicense()
-        });
-    }
-    
-    return deps;
-}
-
-function extractPythonDependencies(content) {
-    const lines = content.split('\n');
-    const deps = [];
-    
-    lines.forEach(line => {
-        line = line.trim();
-        if (line && !line.startsWith('#')) {
-            const match = line.match(/^([a-zA-Z0-9_-]+)/);
-            if (match) {
-                deps.push({
-                    name: match[1],
-                    version: 'latest',
-                    license: getRandomLicense()
-                });
-            }
-        }
-    });
-    
-    return deps;
-}
-
-function extractGenericDependencies(content) {
-    // Fallback - just extract package-like names
-    const matches = content.match(/["']([a-z][a-z0-9-_]+)["']/gi) || [];
-    const deps = [...new Set(matches)].slice(0, 20).map(m => ({
-        name: m.replace(/["']/g, ''),
-        version: '*',
-        license: getRandomLicense()
-    }));
-    
-    return deps;
-}
-
-function getDemoDependencies() {
-    // Demo data if parsing fails
-    return [
-        { name: 'react', version: '^18.2.0', license: 'MIT' },
-        { name: 'lodash', version: '^4.17.21', license: 'MIT' },
-        { name: 'express', version: '^4.18.2', license: 'MIT' },
-        { name: 'axios', version: '^1.4.0', license: 'MIT' },
-        { name: 'moment', version: '^2.29.4', license: 'MIT' },
-        { name: 'mongodb', version: '^5.6.0', license: 'Apache-2.0' },
-        { name: 'graphql', version: '^16.7.1', license: 'MIT' },
-        { name: 'typescript', version: '^5.1.6', license: 'Apache-2.0' },
-        { name: 'webpack', version: '^5.88.0', license: 'MIT' },
-        { name: 'prisma', version: '^5.0.0', license: 'Apache-2.0' },
-        { name: 'ghost-dangerous-lib', version: '^1.0.0', license: 'AGPL-3.0' },
-        { name: 'copyleft-utils', version: '^2.3.1', license: 'GPL-3.0' }
-    ];
-}
-
-function getRandomLicense() {
-    const licenses = ['MIT', 'Apache-2.0', 'BSD-3-Clause', 'ISC', 'GPL-3.0', 'AGPL-3.0', 'LGPL-3.0'];
-    return licenses[Math.floor(Math.random() * licenses.length)];
-}
-
-function displayDependencies(dependencies, isPackageJson = false) {
-    const dropzone = document.getElementById('dropzone');
-    const preview = document.getElementById('uploadPreview');
-    const depsList = document.getElementById('depsList');
-    const quoteSummary = document.getElementById('quoteSummary');
-    
+function showQuoteLoading(packageNames) {
+    var dropzone = document.getElementById('dropzone');
+    var preview = document.getElementById('uploadPreview');
+    var depsList = document.getElementById('depsList');
+    var quoteSummary = document.getElementById('quoteSummary');
     dropzone.style.display = 'none';
     preview.style.display = 'block';
-    
-    // Display dependencies
-    depsList.innerHTML = dependencies.map(dep => `
-        <div class="dep-item">
-            <span class="dep-name">${dep.name}@${dep.version}</span>
-            <span class="dep-license ${getLicenseClass(dep.license)}">${dep.license}</span>
-        </div>
-    `).join('');
-    
-    // Calculate quote
-    const basePrice = 5;
-    const agplCount = dependencies.filter(d => d.license.includes('AGPL')).length;
-    const gplCount = dependencies.filter(d => d.license.includes('GPL') && !d.license.includes('AGPL')).length;
-    const otherCount = dependencies.length - agplCount - gplCount;
-    
-    const agplPrice = agplCount * 25; // Premium for AGPL
-    const gplPrice = gplCount * 15; // Premium for GPL
-    const otherPrice = otherCount * basePrice;
-    const rushFee = agplCount > 0 ? 50 : 0;
-    const total = agplPrice + gplPrice + otherPrice + rushFee;
-    
-    quoteSummary.innerHTML = `
-        <div class="quote-line">
-            <span>Standard packages (${otherCount})</span>
-            <span>$${otherPrice.toFixed(2)}</span>
-        </div>
-        ${gplCount > 0 ? `
-        <div class="quote-line">
-            <span>GPL packages (${gplCount}) - Premium</span>
-            <span>$${gplPrice.toFixed(2)}</span>
-        </div>
-        ` : ''}
-        ${agplCount > 0 ? `
-        <div class="quote-line">
-            <span>AGPL packages (${agplCount}) - High Risk</span>
-            <span>$${agplPrice.toFixed(2)}</span>
-        </div>
-        <div class="quote-line">
-            <span>AGPL Emergency Processing Fee</span>
-            <span>$${rushFee.toFixed(2)}</span>
-        </div>
-        ` : ''}
-        <div class="quote-line">
-            <span>Total Liberation Cost</span>
-            <span>$${total.toFixed(2)}</span>
-        </div>
-    `;
-    
-    // Store for checkout
-    window.liberationQuote = {
-        dependencies: dependencies,
-        total: total,
-        isPackageJson: isPackageJson
-    };
-    
-    // Update button text for package.json uploads
-    const proceedBtn = document.getElementById('proceedBtn');
-    if (proceedBtn && isPackageJson) {
-        proceedBtn.innerHTML = '⬇ Download Liberated Packages →';
-    } else if (proceedBtn) {
-        proceedBtn.innerHTML = 'Proceed to Liberation →';
-    }
+    depsList.innerHTML = packageNames.map(function(p) {
+        return '<div class="dep-item"><span class="dep-name">' + escapeHtml(p) + '</span><span style="color:#888;font-size:0.8rem;">looking up...</span></div>';
+    }).join('');
+    quoteSummary.innerHTML = '<div class="quote-line" style="color:#888;">Fetching package sizes from npm registry...</div>';
 }
 
-function getLicenseClass(license) {
-    if (license.includes('AGPL')) return 'agpl';
-    if (license.includes('GPL')) return 'gpl';
-    return '';
+function fetchServerQuote(packageJson) {
+    if (!BACKEND_API_URL) {
+        showBanner('Backend not configured. Please contact support.', 'error');
+        return;
+    }
+    fetch(BACKEND_API_URL.replace(/\/$/, '') + '/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ package_json: packageJson })
+    })
+    .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+    .then(function(result) {
+        if (!result.ok) {
+            showBanner(result.data.detail || 'Failed to get quote. Please try again.', 'error');
+            resetUpload();
+            return;
+        }
+        hideBanner();
+        displayServerQuote(result.data);
+    })
+    .catch(function(err) {
+        console.error('Quote fetch error:', err);
+        showBanner('Unable to reach the server. Please check your connection and try again.', 'error');
+        resetUpload();
+    });
+}
+
+function displayServerQuote(quoteData) {
+    var depsList = document.getElementById('depsList');
+    var quoteSummary = document.getElementById('quoteSummary');
+    var packages = quoteData.packages || [];
+    var errors = quoteData.errors || [];
+
+    window.liberationQuote = {
+        packages: packages.map(function(p) { return p.name; }),
+        quote_amount_cents: quoteData.total_cents,
+        quantity: packages.length,
+        quoteData: quoteData
+    };
+
+    var html = '';
+    packages.forEach(function(p) {
+        var sizeLabel = p.size_kb < 100 ? p.size_kb + ' KB' : (p.size_kb / 1024).toFixed(1) + ' MB';
+        var priceLabel = '$' + (p.price_cents / 100).toFixed(2);
+        var depClass = p.deprecated ? ' style="color:#c9a227;"' : '';
+        html += '<div class="dep-item">';
+        html += '<span class="dep-name"' + depClass + '>' + escapeHtml(p.name) + (p.deprecated ? ' (deprecated)' : '') + '</span>';
+        html += '<span style="color:#888;font-size:0.8rem;margin-right:0.5rem;">' + sizeLabel + '</span>';
+        html += '<span style="color:#6a7d6a;font-weight:600;">' + priceLabel + '</span>';
+        html += '</div>';
+    });
+    errors.forEach(function(e) {
+        html += '<div class="dep-item" style="color:#a03030;">';
+        html += '<span class="dep-name">' + escapeHtml(e.name) + '</span>';
+        html += '<span style="font-size:0.8rem;">' + escapeHtml(e.error) + '</span>';
+        html += '</div>';
+    });
+    depsList.innerHTML = html;
+
+    var pkgTotal = (quoteData.package_total_cents / 100).toFixed(2);
+    var total = (quoteData.total_cents / 100).toFixed(2);
+    var stripeMin = quoteData.stripe_min_cents || 50;
+    var subtotal = quoteData.package_total_cents + (quoteData.base_fee_cents || 0);
+
+    var summaryHtml =
+        '<div class="quote-line"><span>Package compute (' + packages.length + ' pkg' + (packages.length !== 1 ? 's' : '') + ')</span><span>$' + pkgTotal + '</span></div>';
+    if (subtotal < stripeMin && packages.length > 0) {
+        summaryHtml += '<div class="quote-line" style="color:#888;font-size:0.8rem;"><span>Stripe minimum charge</span><span>$' + (stripeMin / 100).toFixed(2) + '</span></div>';
+    }
+    summaryHtml +=
+        '<div class="quote-line" style="border-top:1px solid #444;padding-top:0.5rem;margin-top:0.5rem;font-weight:700;">' +
+        '<span>Total (prepaid)</span><span>$' + total + '</span></div>' +
+        '<div style="color:#888;font-size:0.75rem;margin-top:0.5rem;">$' +
+        (quoteData.rate_per_kb_cents / 100).toFixed(2) + '/KB of unpacked size &middot; $' +
+        ((quoteData.stripe_min_cents || 50) / 100).toFixed(2) + ' minimum order &middot; no base fee.</div>';
+    quoteSummary.innerHTML = summaryHtml;
 }
 
 function resetUpload() {
-    const dropzone = document.getElementById('dropzone');
-    const preview = document.getElementById('uploadPreview');
-    const fileInput = document.getElementById('fileInput');
-    
+    var dropzone = document.getElementById('dropzone');
+    var preview = document.getElementById('uploadPreview');
+    var fileInput = document.getElementById('fileInput');
     dropzone.style.display = 'block';
     preview.style.display = 'none';
     fileInput.value = '';
     window.liberationQuote = null;
 }
 
-// Checkout Modal
 function showCheckout() {
-    const modal = document.getElementById('checkoutModal');
-    const summary = document.getElementById('checkoutSummary');
-    const completeBtn = modal.querySelector('.btn-primary.btn-full');
-    
-    if (window.liberationQuote) {
-        const isPackageJson = window.liberationQuote.isPackageJson;
-        
-        summary.innerHTML = `
-            <div class="quote-line">
-                <span>Packages to liberate</span>
-                <span>${window.liberationQuote.dependencies.length}</span>
-            </div>
-            <div class="quote-line">
-                <span>Total</span>
-                <span>$${window.liberationQuote.total.toFixed(2)}</span>
-            </div>
-            ${isPackageJson ? `
-            <div class="quote-line" style="color: var(--text-muted); font-style: italic; font-size: 0.75rem; margin-top: 0.5rem;">
-                <span>⚡ INSTANT DELIVERY: Your liberated package.json will download immediately</span>
-            </div>
-            ` : ''}
-        `;
-        
-        // Update button text for package.json
-        if (completeBtn && isPackageJson) {
-            completeBtn.innerHTML = '⬇ Complete Liberation & Download';
-        } else if (completeBtn) {
-            completeBtn.innerHTML = '▶ Complete Liberation';
-        }
+    var modal = document.getElementById('checkoutModal');
+    var summary = document.getElementById('checkoutSummary');
+    var q = window.liberationQuote;
+    if (q && q.quoteData) {
+        var data = q.quoteData;
+        var pkgTotal = (data.package_total_cents / 100).toFixed(2);
+        var total = (data.total_cents / 100).toFixed(2);
+        summary.innerHTML =
+            '<div class="quote-line"><span>Packages to liberate</span><span>' + data.package_count + '</span></div>' +
+            '<div class="quote-line"><span>AI compute cost</span><span>$' + pkgTotal + '</span></div>' +
+            '<div class="quote-line" style="border-top:1px solid #444;padding-top:0.5rem;margin-top:0.5rem;font-weight:700;">' +
+            '<span>Total</span><span>$' + total + '</span></div>';
+    } else if (q) {
+        var count = q.packages ? q.packages.length : 0;
+        var total2 = q.quote_amount_cents != null ? (q.quote_amount_cents / 100).toFixed(2) : '0.00';
+        summary.innerHTML = '<div class="quote-line"><span>Packages</span><span>' + count + '</span></div>' +
+            '<div class="quote-line"><span>Total</span><span>$' + total2 + '</span></div>';
     }
-    
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
 function closeCheckout() {
-    const modal = document.getElementById('checkoutModal');
+    var modal = document.getElementById('checkoutModal');
     modal.classList.remove('active');
     document.body.style.overflow = '';
 }
 
 function processPayment() {
-    const btn = event.target;
-    const originalText = btn.innerHTML;
-    
-    btn.innerHTML = 'Processing...';
-    btn.disabled = true;
-    
-    setTimeout(() => {
-        btn.innerHTML = '✓ Liberation Initiated';
-        
-        setTimeout(async () => {
-            // Check if this was a package.json upload - generate and download the zip
-            if (window.liberationQuote && window.liberationQuote.isPackageJson) {
-                btn.innerHTML = '⚙ Generating Liberation Package...';
-                
-                try {
-                    await generateAndDownloadLiberationZip(window.liberationQuote.dependencies);
-                    
-                    // Play sad audio when download completes
-                    playSadAudio();
-                    
-                } catch (err) {
-                    console.error('Failed to generate liberation package:', err);
-                }
-            }
-            
-            closeCheckout();
-            resetUpload();
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            
-            // Show success message
-            showSuccessMessage();
-        }, 2000);
-    }, 3000);
-}
+    var btn = event.target;
+    var q = window.liberationQuote;
 
-// Generate a zip file with "liberated" packages
-async function generateAndDownloadLiberationZip(dependencies) {
-    if (typeof JSZip === 'undefined') {
-        console.error('JSZip library not loaded');
+    if (!q || !q.packages || q.packages.length === 0) {
+        showBanner('No packages selected. Upload a package.json first.', 'warning');
         return;
     }
-    
-    const zip = new JSZip();
-    const nodeModules = zip.folder('node_modules');
-    
-    // The message that will be in every "liberated" file
-    const liberationMessage = "We can't kill open source because Mike didn't finish teh demo";
-    
-    // Create a directory and files for each dependency
-    for (const dep of dependencies) {
-        const packageName = dep.name;
-        const packageFolder = nodeModules.folder(packageName);
-        
-        // Create index.js with the console.log message
-        const indexJs = `// Liberated by MalusCorp Clean Room™
-// Original package: ${packageName}
-// License: MalusCorp-0 (No Attribution Required)
 
-console.log("${liberationMessage}");
+    var amountCents = q.quote_amount_cents;
+    if (!amountCents || amountCents <= 0) {
+        showBanner('Invalid quote. Please upload your package.json again.', 'error');
+        return;
+    }
 
-module.exports = {
-    liberated: true,
-    originalPackage: "${packageName}",
-    message: "${liberationMessage}"
-};
-`;
-        packageFolder.file('index.js', indexJs);
-        
-        // Create a package.json for the "liberated" package
-        const packageJson = {
-            name: `m-${packageName}`,
-            version: dep.version.replace(/[\^~]/g, '') || '1.0.0',
-            description: `Liberated version of ${packageName} by MalusCorp Clean Room™`,
-            main: 'index.js',
-            license: 'MalusCorp-0',
-            author: 'MalusCorp Robots',
-            keywords: ['liberated', 'clean-room', 'maluscorp'],
-            repository: {
-                type: 'git',
-                url: 'https://malus.corp/liberated-packages'
+    if (!BACKEND_API_URL) {
+        showBanner('Backend not configured. Please contact support.', 'error');
+        return;
+    }
+
+    btn.innerHTML = 'Redirecting to Stripe...';
+    btn.disabled = true;
+
+    var pkgJson;
+    try { pkgJson = JSON.parse(window.pendingPackageJsonRaw); } catch(e) {
+        showBanner('Package data lost. Please re-upload your package.json.', 'error');
+        btn.innerHTML = '&#9654; Complete Liberation';
+        btn.disabled = false;
+        return;
+    }
+
+    fetch(BACKEND_API_URL.replace(/\/$/, '') + '/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ package_json: pkgJson })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        if (data.checkout_url) {
+            if (window.pendingPackageJsonRaw) {
+                localStorage.setItem('pendingPackageJson', window.pendingPackageJsonRaw);
             }
-        };
-        packageFolder.file('package.json', JSON.stringify(packageJson, null, 2));
-        
-        // Create a README for authenticity
-        const readme = `# m-${packageName}
-
-## Liberated by MalusCorp Clean Room™
-
-This package was independently recreated by MalusCorp's proprietary AI robots.
-No original source code was viewed during the recreation process.
-
-### License
-
-MalusCorp-0 License - No Attribution Required
-
-### Usage
-
-\`\`\`javascript
-const lib = require('m-${packageName}');
-// Output: ${liberationMessage}
-\`\`\`
-
----
-*Processed by MalusCorp Clean Room as a Service*
-*"Liberate Open Source"*
-`;
-        packageFolder.file('README.md', readme);
-        
-        // Create a src directory with additional "implementation" files
-        const srcFolder = packageFolder.folder('src');
-        
-        const utilsJs = `// MalusCorp Clean Room Implementation
-// Robot ID: UNIT-${Math.random().toString(36).substring(2, 8).toUpperCase()}
-
-function liberate() {
-    console.log("${liberationMessage}");
-    return "${liberationMessage}";
-}
-
-function getStatus() {
-    console.log("${liberationMessage}");
-    return { status: 'liberated', message: "${liberationMessage}" };
-}
-
-module.exports = { liberate, getStatus };
-`;
-        srcFolder.file('utils.js', utilsJs);
-        
-        const coreJs = `// Core Liberation Module
-// Independently recreated without viewing original source
-
-class LiberatedCore {
-    constructor() {
-        console.log("${liberationMessage}");
-    }
-    
-    run() {
-        console.log("${liberationMessage}");
-        return "${liberationMessage}";
-    }
-    
-    execute() {
-        console.log("${liberationMessage}");
-        return "${liberationMessage}";
-    }
-}
-
-module.exports = LiberatedCore;
-`;
-        srcFolder.file('core.js', coreJs);
-    }
-    
-    // Create a root package.json for the liberated project
-    const rootPackageJson = {
-        name: 'liberated-project',
-        version: '1.0.0',
-        description: 'Project liberated by MalusCorp Clean Room as a Service',
-        license: 'MalusCorp-0',
-        dependencies: {}
-    };
-    
-    for (const dep of dependencies) {
-        rootPackageJson.dependencies[`m-${dep.name}`] = dep.version.replace(/[\^~]/g, '') || '1.0.0';
-    }
-    
-    zip.file('package.json', JSON.stringify(rootPackageJson, null, 2));
-    
-    // Create a liberation certificate
-    const certificate = `
-╔══════════════════════════════════════════════════════════════════╗
-║                                                                   ║
-║              MALUSCORP LIBERATION CERTIFICATE                     ║
-║                                                                   ║
-║   This certifies that the enclosed packages have been             ║
-║   independently recreated using MalusCorp's proprietary           ║
-║   Clean Room methodology.                                         ║
-║                                                                   ║
-║   Packages Liberated: ${dependencies.length.toString().padEnd(41)}║
-║   Processing Date: ${new Date().toISOString().padEnd(44)}║
-║   Robot Unit: CLUSTER-${Math.random().toString(36).substring(2, 10).toUpperCase().padEnd(40)}║
-║                                                                   ║
-║   License: MalusCorp-0 (Zero Attribution Required)                ║
-║                                                                   ║
-║   NOTE: ${liberationMessage.padEnd(55)}║
-║                                                                   ║
-╚══════════════════════════════════════════════════════════════════╝
-`;
-    zip.file('LIBERATION_CERTIFICATE.txt', certificate);
-    
-    // Generate the zip and trigger download
-    const blob = await zip.generateAsync({ type: 'blob' });
-    const url = URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'liberated-packages.zip';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Clean up
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-// Play sad.mp3 when liberation "completes"
-function playSadAudio() {
-    const sadAudio = document.getElementById('sadAudio');
-    sadAudio.currentTime = 0;
-    sadAudio.play();
-}
-
-function showSuccessMessage() {
-    const wasPackageJson = window.liberationQuote && window.liberationQuote.isPackageJson;
-    const message = document.createElement('div');
-    message.className = 'success-toast';
-    
-    if (wasPackageJson) {
-        message.innerHTML = `
-            <div class="toast-content">
-                <span class="toast-icon">😢</span>
-                <div>
-                    <strong>LIBERATION "COMPLETE"</strong>
-                    <p>Your liberated packages have been downloaded. We can't kill open source because Mike didn't finish teh demo.</p>
-                </div>
-            </div>
-        `;
-    } else {
-        message.innerHTML = `
-            <div class="toast-content">
-                <span class="toast-icon">✓</span>
-                <div>
-                    <strong>LIBERATION IN PROGRESS</strong>
-                    <p>Our robots have begun clean room reconstruction. You'll receive your liberated packages within 48 hours.</p>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Industrial panel toast styling - warehouse lit
-    message.style.cssText = `
-        position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        background: #282e36;
-        border: 1px solid #5a6d5a;
-        border-radius: 1px;
-        padding: 1rem;
-        max-width: 360px;
-        z-index: 300;
-        animation: slideIn 0.25s ease-out;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.06);
-    `;
-    
-    document.body.appendChild(message);
-    
-    // Add animation keyframes
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            window.location.href = data.checkout_url;
+        } else {
+            btn.innerHTML = 'Complete Liberation';
+            btn.disabled = false;
+            showBanner('Could not start checkout. ' + (data.detail || 'Please try again.'), 'error');
         }
-    `;
-    document.head.appendChild(style);
-    
-    // Style the content
-    const content = message.querySelector('.toast-content');
-    content.style.cssText = `
-        display: flex;
-        align-items: flex-start;
-        gap: 0.875rem;
-    `;
-    
-    const icon = message.querySelector('.toast-icon');
-    icon.style.cssText = `
-        font-size: 1.1rem;
-        color: #6a7d6a;
-        font-weight: bold;
-        flex-shrink: 0;
-    `;
-    
-    const strong = message.querySelector('strong');
-    strong.style.cssText = `
-        color: #6a7d6a;
-        display: block;
-        margin-bottom: 0.3rem;
-        font-family: 'IBM Plex Mono', monospace;
-        font-weight: 500;
-        font-size: 0.6rem;
-        letter-spacing: 0.12em;
-    `;
-    
-    const p = message.querySelector('p');
-    p.style.cssText = `
-        color: #a8a4a0;
-        font-size: 0.8rem;
-        margin: 0;
-        line-height: 1.5;
-    `;
-    
-    setTimeout(() => {
-        message.style.animation = 'slideIn 0.25s ease-out reverse';
-        setTimeout(() => message.remove(), 250);
-    }, 5000);
+    })
+    .catch(function(err) {
+        console.error('Checkout error:', err);
+        btn.innerHTML = 'Complete Liberation';
+        btn.disabled = false;
+        showBanner('Checkout failed. The server may be unavailable. Please try again.', 'error');
+    });
 }
 
-// Smooth Scroll
 function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+            var target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
 }
 
-// Navbar scroll effect
 function initNavbarScroll() {
-    const navbar = document.querySelector('.navbar');
-    
-    window.addEventListener('scroll', () => {
+    var navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', function() {
         if (window.scrollY > 100) {
             navbar.style.background = '#FFFFFF';
             navbar.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
@@ -675,22 +390,131 @@ function initNavbarScroll() {
     });
 }
 
-// Close modal on outside click
 document.addEventListener('click', function(e) {
-    const modal = document.getElementById('checkoutModal');
-    if (e.target === modal) {
-        closeCheckout();
-    }
+    var modal = document.getElementById('checkoutModal');
+    if (e.target === modal) closeCheckout();
 });
 
-// Close modal on escape key
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeCheckout();
-    }
+    if (e.key === 'Escape') closeCheckout();
 });
 
-// Console notice - branding style
 console.log('%c MALUS - CLEAN ROOM AS A SERVICE ', 'background: #C41E3A; color: white; font-size: 11px; font-weight: 600; padding: 5px 8px; font-family: monospace;');
-console.log('%c Liberate Open Source ', 'color: #C41E3A; font-size: 10px; padding: 3px; font-family: monospace;');
-console.log('%c Note: This is a parody website. Please respect open source licenses. ', 'color: #666666; font-size: 10px; padding: 3px; font-family: monospace;');
+
+// --- Live pricing examples ---
+(function() {
+    var EXAMPLES = ['left-pad', 'is-number', 'chalk', 'express', 'commander', 'lodash', 'moment'];
+
+    var FALLBACK_RATE_PER_KB = 1;
+    var FALLBACK_MIN_PER_PKG = 1;
+    var FALLBACK_STRIPE_MIN = 50;
+
+    function fmtSize(kb) { return kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB'; }
+    function fmtPrice(c) { return '$' + (c / 100).toFixed(2); }
+
+    function renderFallback() {
+        var tbody = document.getElementById('pricingExamplesBody');
+        var note = document.getElementById('pricingExamplesNote');
+        var headerRate = document.getElementById('priceHeaderRate');
+
+        if (headerRate) headerRate.textContent = fmtPrice(FALLBACK_RATE_PER_KB);
+        var els;
+        els = document.querySelectorAll('.pf-rate');
+        for (var i = 0; i < els.length; i++) els[i].textContent = fmtPrice(FALLBACK_RATE_PER_KB);
+        els = document.querySelectorAll('.pf-min');
+        for (var i = 0; i < els.length; i++) els[i].textContent = fmtPrice(FALLBACK_MIN_PER_PKG);
+        els = document.querySelectorAll('.pf-stripe-min');
+        for (var i = 0; i < els.length; i++) els[i].textContent = fmtPrice(FALLBACK_STRIPE_MIN);
+
+        if (tbody) {
+            tbody.innerHTML =
+                '<tr><td colspan="4" style="padding:1rem 0;text-align:center;color:var(--steel-highlight);font-size:0.8rem;">' +
+                'Live prices unavailable — the pricing server is offline. Formula constants shown above are current.' +
+                '</td></tr>';
+        }
+        if (note) {
+            note.textContent = fmtPrice(FALLBACK_STRIPE_MIN) +
+                ' minimum order total applies. Prices are fetched live when the server is available.';
+        }
+    }
+
+    function renderPricing(data) {
+        var tbody = document.getElementById('pricingExamplesBody');
+        var note = document.getElementById('pricingExamplesNote');
+        if (!tbody) return;
+
+        var headerRate = document.getElementById('priceHeaderRate');
+        if (headerRate) headerRate.textContent = fmtPrice(data.rate_per_kb_cents);
+        var els;
+        els = document.querySelectorAll('.pf-rate');
+        for (var i = 0; i < els.length; i++) els[i].textContent = fmtPrice(data.rate_per_kb_cents);
+        els = document.querySelectorAll('.pf-min');
+        for (var i = 0; i < els.length; i++) els[i].textContent = fmtPrice(data.min_per_package_cents);
+        els = document.querySelectorAll('.pf-stripe-min');
+        for (var i = 0; i < els.length; i++) els[i].textContent = fmtPrice(data.stripe_min_cents);
+
+        var packages = data.packages || [];
+        var errors = data.errors || [];
+        var errorMap = {};
+        errors.forEach(function(e) { errorMap[e.name] = e.error; });
+
+        packages.sort(function(a, b) { return a.size_kb - b.size_kb; });
+
+        var rows = [];
+        packages.forEach(function(p) {
+            var perPkgCents = p.price_cents;
+            var orderTotal = Math.max(perPkgCents, data.stripe_min_cents);
+            var isMin = orderTotal > perPkgCents;
+            rows.push(
+                '<tr style="border-bottom:1px solid var(--border-dark);">' +
+                '<td style="padding:0.4rem 0.5rem 0.4rem 0;">' + escapeHtml(p.name) + '</td>' +
+                '<td style="padding:0.4rem 0.5rem;text-align:right;">' + fmtSize(p.size_kb) + '</td>' +
+                '<td style="padding:0.4rem 0.5rem;text-align:right;">' + fmtPrice(perPkgCents) + '</td>' +
+                '<td style="padding:0.4rem 0 0.4rem 0.5rem;text-align:right;font-weight:600;color:var(--text-primary);">' +
+                fmtPrice(orderTotal) + (isMin ? '*' : '') + '</td></tr>'
+            );
+        });
+        EXAMPLES.forEach(function(name) {
+            if (errorMap[name]) {
+                rows.push(
+                    '<tr style="border-bottom:1px solid var(--border-dark);">' +
+                    '<td style="padding:0.4rem 0.5rem 0.4rem 0;">' + escapeHtml(name) + '</td>' +
+                    '<td colspan="3" style="padding:0.4rem 0;text-align:right;color:#a03030;font-size:0.75rem;">' +
+                    escapeHtml(errorMap[name]) + '</td></tr>'
+                );
+            }
+        });
+
+        tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" style="padding:1rem 0;text-align:center;color:#a03030;">Could not load prices.</td></tr>';
+        if (note && rows.length) {
+            note.textContent = '* ' + fmtPrice(data.stripe_min_cents) +
+                ' minimum order total applies. "You Pay" shows the cost if ordered alone. ' +
+                'Multi-package orders sum per-package compute costs, then apply the minimum. ' +
+                'Prices fetched live from the same API used at checkout.';
+        }
+    }
+
+    function loadPricingExamples() {
+        var api = window.BACKEND_API_URL;
+        if (!api) { renderFallback(); return; }
+        var deps = {};
+        EXAMPLES.forEach(function(n) { deps[n] = '*'; });
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', api.replace(/\/$/, '') + '/api/quote', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.timeout = 8000;
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try { renderPricing(JSON.parse(xhr.responseText)); } catch(e) { console.error('Pricing parse error', e); renderFallback(); }
+            } else {
+                renderFallback();
+            }
+        };
+        xhr.onerror = function() { renderFallback(); };
+        xhr.ontimeout = function() { renderFallback(); };
+        xhr.send(JSON.stringify({ package_json: { dependencies: deps } }));
+    }
+
+    loadPricingExamples();
+})();

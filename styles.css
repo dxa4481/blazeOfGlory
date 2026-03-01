@@ -1092,6 +1092,16 @@ section {
     margin: 0 auto 2rem;
 }
 
+.upload-error {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(196, 30, 58, 0.08);
+    border: 1px solid var(--red-primary);
+    border-radius: 6px;
+    color: var(--red-dark);
+    font-size: 0.9rem;
+}
+
 /* Upload box - inspection window */
 .upload-box {
     background: var(--bg-panel);
@@ -2061,6 +2071,92 @@ section {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--steel-mid);
+}
+
+/* API STATUS BANNER */
+.api-status-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--red-dark);
+    color: #fff;
+    font-family: 'IBM Plex Mono', 'Inter', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.api-status-banner.hidden {
+    display: none;
+}
+
+.api-status-banner.warning {
+    background: #8a6d00;
+}
+
+.api-status-dismiss {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    opacity: 0.8;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.api-status-dismiss:hover {
+    opacity: 1;
+}
+
+/* Inline notification (replaces alert()) */
+.inline-notification {
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    animation: notifSlideIn 0.25s ease;
+}
+
+.inline-notification.error {
+    background: rgba(196, 30, 58, 0.08);
+    border: 1px solid var(--red-primary);
+    color: var(--red-dark);
+}
+
+.inline-notification.warning {
+    background: rgba(138, 109, 0, 0.08);
+    border: 1px solid #8a6d00;
+    color: #6b5500;
+}
+
+.inline-notification.info {
+    background: rgba(74, 124, 74, 0.08);
+    border: 1px solid var(--pass-primary);
+    color: var(--pass-primary);
+}
+
+@keyframes notifSlideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dropzone disabled state */
+.upload-box.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
 /* SELECTION */

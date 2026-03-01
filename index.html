@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- API status banner (shown when backend is unreachable) -->
+    <div id="apiStatusBanner" class="api-status-banner hidden">
+        <span id="apiStatusMsg">Our liberation services are temporarily unavailable. Please try again later.</span>
+        <button class="api-status-dismiss" onclick="this.parentElement.classList.add('hidden')" aria-label="Dismiss">&times;</button>
+    </div>
+
     <!-- Warehouse lighting background -->
     <div class="bg-texture"></div>
 
@@ -38,7 +44,7 @@
     <section class="malus-header">
         <div class="malus-header-content">
             <h1 class="malus-logo">MALUS</h1>
-            <p class="malus-tagline">You wouldn't take candy from a stranger, why would you run their code?</p>
+            <p class="malus-tagline">Liberate Open Source</p>
             <div class="malus-divider"></div>
         </div>
     </section>
@@ -309,6 +315,7 @@
             <p class="section-subtitle">Upload your dependency manifest and receive a quote instantly.</p>
             
             <div class="upload-container">
+                <div id="uploadError" class="upload-error" style="display: none;"></div>
                 <div class="upload-box" id="dropzone">
                     <div class="upload-icon">
                         <svg viewBox="0 0 100 100" width="60" height="60">
@@ -318,8 +325,8 @@
                         </svg>
                     </div>
                     <h3>Drop Your Manifest Here</h3>
-                    <p>package.json · requirements.txt · Cargo.toml · go.mod · pom.xml</p>
-                    <input type="file" id="fileInput" accept=".json,.txt,.toml,.mod,.xml" hidden>
+                    <p>package.json</p>
+                    <input type="file" id="fileInput" accept=".json,application/json" hidden>
                     <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
                         Select File
                     </button>
@@ -332,7 +339,7 @@
                     </div>
                     <div class="dependencies-list" id="depsList"></div>
                     <div class="quote-summary" id="quoteSummary"></div>
-                    <button class="btn btn-primary btn-large" id="proceedBtn" onclick="showCheckout()">
+                    <button class="btn btn-primary btn-large" onclick="showCheckout()">
                         Proceed to Liberation →
                     </button>
                 </div>
@@ -358,68 +365,53 @@
     <section class="pricing" id="pricing">
         <div class="container">
             <h2 class="section-title"><span class="highlight">Investment</span> in Freedom</h2>
-            <p class="section-subtitle">Transparent pricing. No hidden license fees. Ever.</p>
-            
+            <p class="section-subtitle">Transparent, pay-per-KB pricing. No tiers, no subscriptions, no hidden fees.</p>
+
             <div class="pricing-grid">
-                <div class="price-card">
+                <div class="price-card featured" style="grid-column: 1 / -1; max-width: 720px; margin: 0 auto; transform: none;">
                     <div class="price-header">
-                        <h3>Starter Unit</h3>
-                        <div class="price">$5<span>/package</span></div>
+                        <h3>How Pricing Works</h3>
+                        <div class="price"><span id="priceHeaderRate">…</span><span>/KB</span></div>
                     </div>
                     <div class="price-body">
-                        <p class="price-desc">Perfect for eliminating individual problematic dependencies</p>
+                        <p class="price-desc" style="text-align:left;">
+                            Every package is priced by its <strong>unpacked size on npm</strong>. We look up each dependency in your <code>package.json</code>, measure the size in kilobytes, and charge <strong><span class="pf-rate">…</span> per KB</strong>. That's it.
+                        </p>
+                        <div id="pricingFormula" class="pricing-formula" style="background:var(--bg-surface);border:1px solid var(--border-dark);border-radius:6px;padding:1rem;margin-bottom:1.25rem;font-family:'IBM Plex Mono',monospace;font-size:0.8rem;line-height:1.8;">
+                            <div><span style="color:var(--text-muted);">per package</span> = max( <span class="pf-min">…</span>, size_kb × <span class="pf-rate">…</span> )</div>
+                            <div><span style="color:var(--text-muted);">order total</span> = max( <span class="pf-stripe-min">…</span>, sum of all packages )</div>
+                            <div style="color:var(--text-muted);font-size:0.7rem;margin-top:0.5rem;"><span class="pf-stripe-min">…</span> minimum applies per order (Stripe processing floor). No base fee.</div>
+                        </div>
+
+                        <h4 style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.75rem;">Live Prices (fetched from our API)</h4>
+                        <table id="pricingExamples" style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:0.5rem;">
+                            <thead>
+                                <tr style="border-bottom:2px solid var(--border-dark);text-align:left;">
+                                    <th style="padding:0.5rem 0.5rem 0.5rem 0;color:var(--text-muted);font-weight:600;">Package</th>
+                                    <th style="padding:0.5rem;color:var(--text-muted);font-weight:600;text-align:right;">npm Size</th>
+                                    <th style="padding:0.5rem;color:var(--text-muted);font-weight:600;text-align:right;">Compute</th>
+                                    <th style="padding:0.5rem 0 0.5rem 0.5rem;color:var(--text-muted);font-weight:600;text-align:right;">If Ordered Alone</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pricingExamplesBody" style="color:var(--text-secondary);">
+                                <tr><td colspan="4" style="padding:1rem 0;text-align:center;color:var(--text-muted);">Loading live prices…</td></tr>
+                            </tbody>
+                        </table>
+                        <p id="pricingExamplesNote" style="color:var(--text-muted);font-size:0.7rem;margin-bottom:1.25rem;"></p>
+
+                        <h4 style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.75rem;">What's Included</h4>
                         <ul>
-                            <li>✓ Single package recreation</li>
-                            <li>✓ MalusCorp-0 License</li>
-                            <li>✓ Basic documentation</li>
-                            <li>✓ 30-day delivery</li>
-                            <li>✓ Email support</li>
+                            <li>✓ AI-powered clean room recreation (MalusCorp-0 License)</li>
+                            <li>✓ Full CSP specification pack (10 documents)</li>
+                            <li>✓ Packages up to <strong>10 MB</strong> unpacked size</li>
+                            <li>✓ Up to <strong>50 packages</strong> per order</li>
+                            <li>✓ No base fee, no subscription — pay only for what you liberate</li>
                         </ul>
-                        <a href="#upload" class="btn btn-outline">Initialize</a>
-                    </div>
-                </div>
-                
-                <div class="price-card featured">
-                    <div class="featured-badge">Recommended</div>
-                    <div class="price-header">
-                        <h3>Enterprise Unit</h3>
-                        <div class="price">$999<span>/month</span></div>
-                    </div>
-                    <div class="price-body">
-                        <p class="price-desc">Unlimited liberation for your entire organization</p>
-                        <ul>
-                            <li>✓ <strong>Unlimited</strong> recreations</li>
-                            <li>✓ Priority robot allocation</li>
-                            <li>✓ Custom license drafting</li>
-                            <li>✓ 48-hour express delivery</li>
-                            <li>✓ Dedicated manager</li>
-                            <li>✓ Legal documentation</li>
-                            <li>✓ CI/CD integration</li>
-                        </ul>
-                        <a href="#upload" class="btn btn-primary">Contact Sales</a>
-                    </div>
-                </div>
-                
-                <div class="price-card">
-                    <div class="price-header">
-                        <h3>Total Liberation™</h3>
-                        <div class="price">Custom</div>
-                    </div>
-                    <div class="price-body">
-                        <p class="price-desc">Complete codebase transformation for acquisition or IPO</p>
-                        <ul>
-                            <li>✓ Full codebase analysis</li>
-                            <li>✓ All dependencies liberated</li>
-                            <li>✓ Legal audit certification</li>
-                            <li>✓ Board presentation</li>
-                            <li>✓ On-site deployment</li>
-                            <li>✓ White-glove service</li>
-                        </ul>
-                        <a href="#upload" class="btn btn-outline">Request Quote</a>
+                        <a href="#upload" class="btn btn-primary" style="margin-top:0.5rem;">Upload Manifest</a>
                     </div>
                 </div>
             </div>
-            
+
             <div class="guarantee-box">
                 <div class="guarantee-icon">◉</div>
                 <div class="guarantee-text">
@@ -592,10 +584,10 @@
                 <div class="footer-links">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="#">Terms of Service</a></li>
                         <li><a href="#">Privacy Policy</a></li>
                         <li><a href="#">MalusCorp-0 License</a></li>
-                        <li><a href="terms.html">Indemnification Waiver</a></li>
+                        <li><a href="#">Indemnification Waiver</a></li>
                     </ul>
                 </div>
             </div>
@@ -612,45 +604,16 @@
             <button class="modal-close" onclick="closeCheckout()">×</button>
             <h2>Complete Your <span class="highlight">Liberation</span></h2>
             <div class="checkout-form">
-                <div class="form-group">
-                    <label>Corporate Name</label>
-                    <input type="text" placeholder="Definitely Legitimate Corp, LLC">
-                </div>
-                <div class="form-group">
-                    <label>Work Email</label>
-                    <input type="email" placeholder="compliance@corporation.com">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Card Number</label>
-                        <input type="text" placeholder="4242 4242 4242 4242">
-                    </div>
-                    <div class="form-group small">
-                        <label>Expiry</label>
-                        <input type="text" placeholder="12/29">
-                    </div>
-                    <div class="form-group small">
-                        <label>CVC</label>
-                        <input type="text" placeholder="666">
-                    </div>
-                </div>
                 <div class="checkout-summary" id="checkoutSummary"></div>
                 <button class="btn btn-primary btn-large btn-full" onclick="processPayment()">
                     ▶ Complete Liberation
                 </button>
-                <p class="checkout-note">Your payment is secured by our offshore banking partners. All transactions are processed in a jurisdiction of our choosing.</p>
+                <p class="checkout-note">You will be redirected to Stripe to complete payment securely. After payment, your clean room jobs will begin automatically.</p>
             </div>
         </div>
     </div>
 
-    <!-- JSZip for generating zip files -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    
-    <!-- Sad audio for when liberation "completes" -->
-    <audio id="sadAudio" preload="auto">
-        <source src="sad.mp3" type="audio/mpeg">
-    </audio>
-    
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
