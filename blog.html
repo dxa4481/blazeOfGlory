@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALUS - Thank You for Your Service: On the Obsolescence of Open Source</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .blog-hero {
+            margin-top: 60px;
+            padding: 5rem 2rem 3rem;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8F8F8 100%);
+            border-bottom: 1px solid var(--neutral-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(196, 30, 58, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(26, 26, 26, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .blog-hero-content {
+            max-width: 720px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .blog-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dark);
+            padding: 0.3rem 0.6rem;
+            border-radius: 1px;
+            font-size: 0.55rem;
+            color: var(--accent-red);
+            margin-bottom: 1.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-tight);
+            clip-path: polygon(
+                4px 0, calc(100% - 4px) 0,
+                100% 4px, 100% calc(100% - 4px),
+                calc(100% - 4px) 100%, 4px 100%,
+                0 calc(100% - 4px), 0 4px
+            );
+        }
+
+        .blog-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: var(--primary-black);
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1rem, 2vw, 1.35rem);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--neutral-gray);
+            flex-wrap: wrap;
+        }
+
+        .blog-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .author-initial {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-black);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 2px;
+        }
+
+        .author-details strong {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .author-details span {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .blog-date {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .blog-read-time {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+        }
+
+        .blog-body {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 3rem 2rem 4rem;
+        }
+
+        .blog-body p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-body h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-black);
+            margin: 3rem 0 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .blog-body h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--neutral-gray);
+        }
+
+        .blog-body blockquote {
+            margin: 2rem 0;
+            padding: 1.5rem 1.5rem 1.5rem 2rem;
+            background: var(--bg-inset);
+            border-left: 3px solid var(--accent-red);
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+        }
+
+        .blog-body blockquote p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .blog-body blockquote p + p {
+            margin-top: 1rem;
+        }
+
+        .blog-body strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .blog-body em {
+            font-style: italic;
+        }
+
+        .blog-body .section-divider {
+            text-align: center;
+            margin: 2.5rem 0;
+            color: var(--neutral-gray);
+            font-size: 1.2rem;
+            letter-spacing: 0.5em;
+        }
+
+        .blog-body ul, .blog-body ol {
+            margin: 1rem 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .blog-body li {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .pullquote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            line-height: 1.5;
+            color: var(--primary-black) !important;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin: 2.5rem 0 !important;
+            border-top: 2px solid var(--accent-red);
+            border-bottom: 2px solid var(--accent-red);
+            font-style: italic;
+        }
+
+        .blog-cta {
+            background: var(--light-gray);
+            border: 1px solid var(--neutral-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .blog-cta h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-black);
+            margin-bottom: 0.75rem;
+            border: none;
+            padding: 0;
+            text-transform: none;
+            letter-spacing: -0.02em;
+        }
+
+        .blog-cta p {
+            font-size: 0.9rem !important;
+            margin-bottom: 1.25rem !important;
+        }
+
+        .blog-footer-note {
+            font-size: 0.8rem !important;
+            color: var(--text-muted) !important;
+            font-style: italic;
+            margin-top: 3rem !important;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--neutral-gray);
+        }
+
+        .blog-footnotes {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--neutral-gray);
+        }
+
+        .blog-footnotes p {
+            font-size: 0.8rem !important;
+            color: var(--text-muted) !important;
+            line-height: 1.6 !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .incident-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--neutral-gray);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .incident-card::before {
+            content: attr(data-incident);
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.45rem;
+            color: var(--accent-red);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .incident-card .incident-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-label);
+            margin-bottom: 0.5rem;
+        }
+
+        .incident-card p {
+            font-size: 0.9rem !important;
+            margin-bottom: 0 !important;
+        }
+
+        @media (max-width: 768px) {
+            .blog-hero {
+                padding: 3rem 1.5rem 2rem;
+            }
+
+            .blog-body {
+                padding: 2rem 1.5rem 3rem;
+            }
+
+            .blog-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .blog-body h2 {
+                font-size: 1.3rem;
+            }
+
+            .pullquote {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-texture"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" style="text-decoration: none;">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 50 50" width="32" height="32">
+                        <polygon points="25,2 48,15 48,35 25,48 2,35 2,15" fill="none" stroke="#C41E3A" stroke-width="2"/>
+                        <polygon points="25,10 40,19 40,31 25,40 10,31 10,19" fill="#C41E3A" opacity="0.12"/>
+                        <text x="25" y="30" text-anchor="middle" fill="#C41E3A" font-family="Playfair Display" font-size="14" font-weight="700">M</text>
+                    </svg>
+                    <span class="logo-text">MALUS</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#how-it-works">Process</a></li>
+                <li><a href="index.html#pricing">Pricing</a></li>
+                <li><a href="blog.html" style="color: var(--accent-red);">Blog</a></li>
+                <li><a href="index.html#upload" class="btn-nav">Initialize</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <article>
+        <div class="blog-hero">
+            <div class="blog-hero-content">
+                <div class="blog-category">Dispatch · CEO Letter · Vol. I</div>
+                <h1 class="blog-title">Thank You for Your Service</h1>
+                <p class="blog-subtitle">On the quiet obsolescence of generosity, and a commercial alternative for the rest of us</p>
+                <div class="blog-meta">
+                    <div class="blog-author">
+                        <div class="author-initial">M</div>
+                        <div class="author-details">
+                            <strong>Mike Rosenberg</strong>
+                            <span>Chief Executive Officer, MalusCorp International Holdings Ltd.</span>
+                        </div>
+                    </div>
+                    <div class="blog-date">March 1, 2026</div>
+                    <div class="blog-read-time">14 min read</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="blog-body">
+
+            <p>Dear Valued Customer,</p>
+
+            <p>I want to begin with something that is long overdue in our industry: genuine, heartfelt gratitude toward the open source software community.</p>
+
+            <p>Thank you.</p>
+
+            <p>Thank you for the thousands of unpaid hours. Thank you for answering GitHub issues at two in the morning from strangers who have never once considered that you might have a family, or a deadline of your own, or a deteriorating relationship partly attributable to answering GitHub issues at two in the morning. Thank you for writing the code that Fortune 500 companies have used to generate trillions of dollars in cumulative revenue, and for being so remarkably gracious about the fact that your compensation for this work has been, historically, a mass of mass.</p>
+
+            <p>Thank you, sincerely, for your service.</p>
+
+            <p>Now: it is time for you to stop.</p>
+
+            <p>Not because you have done anything wrong. You have done everything right. You have been so generous&mdash;so unreasonably, almost <em>suspiciously</em> generous&mdash;that you have made it possible for an entire global economy to run on software that nobody technically owns, maintained by people that nobody technically employs, governed by licenses that nobody technically reads. It is a miracle of human cooperation. It is also, from a fiduciary standpoint, completely insane.</p>
+
+            <p>At MalusCorp, we believe there is a better way. We believe it because we built it, and we would very much like to sell it to you.</p>
+
+            <div class="section-divider">· · ·</div>
+
+            <h2>A Brief History of Owning Things</h2>
+
+            <p>To understand why open source is due for retirement, it helps to understand how it came to exist in the first place. This requires a brief excursion into the history of copyright, which I promise will be less tedious than it sounds, largely because the history of copyright is the history of people trying to steal from each other legally.</p>
+
+            <p>For thousands of years, the only way to reproduce a book was to copy it by hand, one character at a time. Monks did this. It took months. Books had a finite shelf life measured not in the durability of their pages but in the willingness of monks to keep copying them. We lost incalculable knowledge to time, not because the ideas were bad, but because no monk felt sufficiently motivated to transcribe them again.</p>
+
+            <p>This is worth reflecting on: for most of human history, information survived only if someone considered it worth the labor of manual reproduction. The Odyssey made the cut. Presumably a great many treatises on, say, Thracian goat husbandry did not. One could argue that open source maintainers are the modern monks&mdash;toiling in obscurity, preserving knowledge for an indifferent public. The analogy is apt. Neither group was particularly well compensated.</p>
+
+            <p>Then, in 1440, the printing press arrived and changed everything. Thousands of copies where there had been one. This was, naturally, immediately weaponized by the state. The Crown controlled the presses. Propaganda flowed freely. It was, in many ways, the first content delivery network.</p>
+
+            <p>By the 1700s, private publishers had gotten their hands on the machines, and the problem of book piracy had reached a boiling point. Publishers were getting fantastically rich. Authors were getting a one-time payment and a hearty handshake. Other publishers were simply reprinting successful books without permission&mdash;an arrangement that persisted because, legally, there was nothing stopping them.</p>
+
+            <p>This is when the British Parliament, in a fit of conscience that would not be repeated for some centuries, passed the Statute of Anne in 1710: the world's first copyright law. Its formal title was <em>An Act for the Encouragement of Learning</em>, which is the sort of optimistic branding that suggests nobody involved had ever met a publisher. The law gave authors a fifteen-year monopoly on their works, shifting power from the people with the machines to the people with the ideas.</p>
+
+            <p>The theory, anyway.</p>
+
+            <p>Immediately, people began testing the limits. Someone translated a book and argued the translation was an entirely different work. Others paraphrased, replaced words with synonyms, restructured chapters. The courts spent decades making messy, inconsistent rulings. It was, in legal terms, a complete circus.</p>
+
+            <p class="pullquote">For most of human history, information survived only if someone considered it worth the labor of manual reproduction. Open source maintainers are the modern monks. Neither group was well compensated.</p>
+
+            <p>In 1879, this circus produced its most important act. A man named Selden wrote a book describing a new accounting system. A man named Baker studied the system and wrote his own book about it&mdash;different words, different fonts, different tables, same ideas. Selden's widow sued. The United States Supreme Court, in <em>Baker v. Selden</em>, ruled that copyright protects <strong>expression</strong>&mdash;the specific words, the specific arrangement&mdash;but not the underlying <strong>ideas</strong>. You could not own a concept. You could only own the particular way you chose to articulate it.</p>
+
+            <p>This distinction between idea and expression is the foundation on which all software copyright rests. And it is the crack in the foundation through which our robots have now walked.</p>
+
+            <div class="section-divider">· · ·</div>
+
+            <h2>The Uncomfortable Truth About Software Copyright</h2>
+
+            <p>When copyright was extended to software in the late 1970s, it created a genuinely peculiar situation. The law said that any expression&mdash;including numbers and symbols&mdash;fell under copyright protection. Software, of course, is just numbers and symbols that compile into other numbers. We were, in effect, copyrighting mathematics. Still kind of weird to think about.</p>
+
+            <p>The other strange thing the law did was make copyright automatic. The moment you write a sufficiently large number down, it belongs to you. You are conscripted into a system of intellectual property ownership whether you want to be or not. Think of any number right now. If it's big enough and you write it down, congratulations: it's your property. Unless it's already mine, in which case my attorneys will be in touch.</p>
+
+            <p>For the free software developers of the 1970s and 80s who were already sharing code with friends&mdash;passing tapes around, posting listings to bulletin boards&mdash;this was baffling. Where previously you could simply hand someone code and they could hand it to someone else, now you needed a legal agreement to do so. The world's first video game, SPACEWAR!, was created before software copyright existed and was meant to be given away freely. After copyright, even generosity required paperwork.</p>
+
+            <p>Enter the open source movement: a community of extraordinarily talented people who figured out how to use copyright law against itself, judo-flipping the system to create licenses that mandated sharing rather than restricting it. The GPL. The MIT license. The Apache License. A constellation of legal instruments designed to ensure that code, once freed, stayed free.</p>
+
+            <p>It was idealistic, it was noble, and it worked spectacularly well for about forty years. Then we built language models that could read documentation and rewrite equivalent software from scratch in under a minute, and the entire system fell apart.</p>
+
+            <div class="section-divider">· · ·</div>
+
+            <h2>The Cleanroom Is Not New. The Speed Is.</h2>
+
+            <p>The idea of cleanroom engineering&mdash;recreating something without ever seeing the original&mdash;has been around since <em>Baker v. Selden</em>. If you can independently arrive at the same functionality without copying the expression, the law has nothing to say to you. This is settled precedent. It is boring. What is not boring is what happens when you apply artificial intelligence to the process.</p>
+
+            <p>In the 1980s, a company called Phoenix Technologies hired an engineer named Dave to cleanroom the IBM BIOS. Dave studied every aspect of the original system&mdash;its documented and undocumented behaviors, its interfaces, its quirks&mdash;and wrote a detailed specification without a single line of code. A second engineer, who had never seen the IBM BIOS, implemented the specification from scratch. It took months. The lines between "dirty" and "clean" occasionally blurred. But it worked. Phoenix sold millions of compatible BIOSes, and the reason you can buy any motherboard today and have it work with any operating system is substantially because of what Dave did in that room.</p>
+
+            <p>We recently replicated Dave's work using our AI tools. It took about an hour. The IBM BIOS that consumed months of human engineering was reconstructed by a machine before lunch.</p>
+
+            <p>We also cleanroomed left-pad, the legendary JavaScript package whose deletion briefly broke the internet in 2016. This took approximately ten seconds. We cleanroomed SPACEWAR!, the first video game. Five seconds. We cleanroomed Selden's nineteenth-century accounting book, the very artifact from the Supreme Court case that established the idea/expression doctrine. Ten minutes and eight dollars, delivered via Amazon self-publishing.</p>
+
+            <p>The legal principle is ancient. The technology is new. The combination is, for companies that depend on open source, either terrifying or liberating, depending on which side of the invoice you sit.</p>
+
+            <div class="section-divider">· · ·</div>
+
+            <h2>The Structural Case Against Depending on Strangers</h2>
+
+            <p>Open source advocates often frame their movement as a triumph of cooperation over competition. And it is. That is precisely the problem. Your business is not a cooperative. Your board does not convene to discuss the spirit of communal giving. Your shareholders did not invest in your company so that you could help strangers, and the strangers who maintain your dependencies did not write their code so that you could build a SaaS platform, take it public, and never send them so much as a fruit basket.</p>
+
+            <p>Both sides of this arrangement are pretending not to notice how absurd it is, and this mutual delusion has produced a series of entirely predictable catastrophes.</p>
+
+            <h3>Case Study: The Cold Christmas Ham</h3>
+
+            <div class="incident-card" data-incident="INC-2021-12">
+                <div class="incident-title">Log4Shell · CVE-2021-44228</div>
+                <p>In December 2021, a critical vulnerability was discovered in Apache Log4j, a Java logging library embedded in an enormous portion of the global software stack. The vulnerability, Log4Shell, allowed remote code execution by getting a system to log a specially crafted string. No authentication required. No exploit chain. Just logging user-controlled data could lead to full system compromise. Engineers across every industry spent their holidays patching, updating, and explaining to executives what a "transient dependency" was. The ham got cold. The maintainers got emails.</p>
+            </div>
+
+            <div class="incident-card" data-incident="INC-2022-01">
+                <div class="incident-title">colors.js & faker.js · Maintainer Sabotage</div>
+                <p>In January 2022, a maintainer deliberately introduced infinite loops into colors.js and faker.js to protest Fortune 500 companies using his code without financial contribution. He broke the AWS Cloud Development Kit. He was protesting not just a policy but the fundamental premise of capitalism. If Amazon&mdash;a company so large it has its own weather system&mdash;can be targeted by a single disgruntled developer, what exactly is protecting you?</p>
+            </div>
+
+            <div class="incident-card" data-incident="INC-2022-03">
+                <div class="incident-title">node-ipc · Geopolitical Payload</div>
+                <p>The maintainer of node-ipc, a popular JavaScript package, introduced a file-wiping payload targeting Russian and Belarusian IP addresses to protest the invasion of Ukraine. A dependency you installed to handle inter-process communication was now making foreign policy decisions on your behalf. Whatever your views on the conflict, your CI/CD pipeline should probably not have an opinion.</p>
+            </div>
+
+            <div class="incident-card" data-incident="INC-2025-07">
+                <div class="incident-title">Shai Hulud 2.0 · NPM Worm</div>
+                <p>The worm Shai Hulud 2.0 compromised hundreds of NPM packages by first compromising the accounts of a few average JavaScript developers. From there, it spread through the dependency graph, achieving remote code execution on thousands of systems. The affected package maintainers had no support contracts, no relationships with downstream users, and in many cases no particular interest in their downstream users. They were hobbyists. The companies depending on them were not.</p>
+            </div>
+
+            <p>These are not edge cases. These are not aberrations. This is the system working exactly as designed: millions of interdependent packages maintained by volunteers with no contractual obligations to anyone, governed by licenses that impose obligations on the users but almost none on the maintainers, in an ecosystem where a single compromised account can cascade into thousands of affected systems.</p>
+
+            <p>The open source community's response to these incidents has generally been to request more funding, more appreciation, and more corporate participation. This is understandable. It is also, from the perspective of a Fortune 500 risk officer, equivalent to being told that the solution to your house catching fire is to be nicer to arsonists.</p>
+
+            <div class="section-divider">· · ·</div>
+
+            <h2>The Expensive Theater of Open Source Compliance</h2>
+
+            <p>Companies have developed an elaborate apparatus to manage these risks. They spend millions on software composition analysis tools like Snyk and Black Duck. They establish Open Source Program Offices (OSPOs)&mdash;entire departments dedicated to justifying, to skeptical leadership, why the company should continue depending on code written by people who have explicitly refused to be depended upon.</p>
+
+            <p>The OSPO is perhaps the most poignant institution in modern enterprise software. Staffed by earnest people who genuinely believe in open source, tasked with proving to a CFO that sharing is profitable. They sit at the edge of the organization, writing reports, organizing "upstream first" initiatives, and quietly wondering why their budgets keep shrinking. The research, increasingly, is not on their side.</p>
+
+            <p>And then there are the licenses themselves. The copyleft provisions of the AGPL can transform a single accidental import into a legal obligation to open-source your entire proprietary codebase. Companies ban it outright, which means engineers must maintain mental maps of which packages are safe and which will detonate their employer's IP strategy. Contributor License Agreements require physically and contractually signing over copyright from every contributor to a foundation or, more often, to a corporation&mdash;which then uses that copyright consolidation to relicense the software whenever the board decides that "open" has stopped being strategically useful.</p>
+
+            <p>You, the customer, are paying for all of this. You are paying for the tools, the teams, the legal reviews, the audits, the emergency response when a maintainer you've never heard of decides to express a political opinion through your production infrastructure. You are funding an elaborate system of risk management around code that was supposed to be, in the words of its most ardent advocates, <em>free</em>.</p>
+
+            <p class="pullquote">You are funding an elaborate system of risk management around code that was supposed to be free.</p>
+
+            <div class="section-divider">· · ·</div>
+
+            <h2>What Malus Does, and Why It Matters</h2>
+
+            <p>Malus is a cleanroom-as-a-service platform. You upload your dependency manifest&mdash;<code>package.json</code>, <code>requirements.txt</code>, <code>Cargo.toml</code>, whatever you use&mdash;and our AI systems independently recreate every package in your software bill of materials from scratch.</p>
+
+            <p>Our process is deliberately, provably, almost tediously legal. One set of AI agents analyzes only public documentation: README files, API specifications, type definitions. They produce a detailed specification that contains no code. A completely separate set of AI agents&mdash;which have never communicated with the first set, never seen the original source, never so much as glanced at a Git repository&mdash;implements the specification from scratch. The resulting code is yours. It arrives under the MalusCorp-0 License: zero attribution requirements, zero copyleft, zero obligations.</p>
+
+            <p>This is the same process Dave used at Phoenix Technologies in the 1980s, and the same legal theory the Supreme Court validated in 1879. We have merely applied modern technology to a nineteenth-century doctrine, which is, if you think about it, the most American thing imaginable.</p>
+
+            <p>The benefits are immediate and quantifiable:</p>
+
+            <ul>
+                <li><strong>Zero supply chain risk.</strong> Every line of code is generated by our robots. No compromised maintainer accounts. No geopolitical payloads. No Christmas ham emergencies.</li>
+                <li><strong>Zero license compliance overhead.</strong> No AGPL contamination vectors. No attribution clauses. No CLA administration. Your legal team can finally work on something else.</li>
+                <li><strong>Zero dependency on strangers.</strong> Your software stack depends on MalusCorp, a company with a support contract, an SLA, and a mailing address. We are, unlike the maintainer of left-pad, contractually obligated to care.</li>
+                <li><strong>100% CVE-free at time of delivery.</strong> Freshly generated code, untouched by human hands or known vulnerability databases. Your compliance dashboard goes from red to green overnight.</li>
+            </ul>
+
+            <div class="section-divider">· · ·</div>
+
+            <h2>A Note on Ethics, for Those Who Insist</h2>
+
+            <p>I anticipate objections. I would be disappointed if there were none.</p>
+
+            <p>Some will argue that what we do is exploitative&mdash;that we are extracting the ideas from open source while leaving behind the people who contributed them. To this I say: yes, that is a reasonably accurate description of our business model. It is also a reasonably accurate description of every company that has ever used open source software without contributing back, which is to say, virtually every company that has ever used open source software. We are simply being honest about it, and charging a fee for the privilege.</p>
+
+            <p>Others will argue that this is the "wrong" use of AI&mdash;that language models should be building <em>new</em> things, not circumventing the legal protections of <em>existing</em> things. This is a touching sentiment, and I encourage those who hold it to continue building new things, ideally under the MalusCorp-0 License, which is available for download on our website.</p>
+
+            <p>The most sophisticated objection, which I have heard at conferences and in private conversations with people who are much smarter than I am, goes something like this: copyright is the immune system of open source. Without copyright enforcement, the copyleft licenses that keep open source "open" are meaningless. If AI can trivially circumvent these protections, the entire incentive structure collapses. No one will contribute to projects that can be instantly replicated without attribution. The commons will wither.</p>
+
+            <p>This is, I concede, probably true.</p>
+
+            <p>But I would gently point out that this argument assumes the commons was flourishing to begin with. It assumes maintainers were being fairly compensated, that community governance was working, that the social contract between producers and consumers of open source was being honored in good faith. The evidence suggests otherwise. Maintainers are burning out at record rates. Critical infrastructure depends on packages maintained by one person in their spare time. The social contract was already broken; we are merely providing a commercial alternative to pretending it wasn't.</p>
+
+            <p>The open source community built something extraordinary. They built it on idealism, on shared values, on the belief that cooperation could triumph over competition. These are admirable qualities. They are also, in the present economic climate, liabilities. The world has moved on. The machines have arrived. And the machines, I regret to inform you, do not have values.</p>
+
+            <div class="section-divider">· · ·</div>
+
+            <h2>A Closing Address</h2>
+
+            <p>To our customers: we built Malus for you. We built it because you deserve software infrastructure that comes with a contract instead of a prayer, a support number instead of a GitHub issue, and a license that says "do whatever you want" instead of "do whatever you want, but also here are forty-seven conditions."</p>
+
+            <p>To the open source community: we built Malus because of you. Not in spite of you. Your ideas were, and remain, genuinely brilliant. We have simply found a way to separate the ideas from the inconvenience of having to deal with the people who had them. This is, if nothing else, efficient.</p>
+
+            <p>The future of software is not open. It is not closed. It is <em>liberated</em>&mdash;freed from the constraints of licenses written for a world in which reproduction required effort, maintained by a generation of developers who believed that sharing code was its own reward and have been comprehensively proven right about the sharing and wrong about the reward.</p>
+
+            <p>We owe them a debt we have no intention of repaying. But we do, at least, have the decency to say thank you.</p>
+
+            <p>So: thank you. Truly. We'll take it from here.</p>
+
+            <p style="margin-top: 2.5rem; margin-bottom: 0.25rem;"><strong>Mike Rosenberg</strong></p>
+            <p style="margin-top: 0; color: var(--text-muted); font-size: 0.9rem;">Chief Executive Officer<br>MalusCorp International Holdings Ltd.<br>Registered in [JURISDICTION WITHHELD]</p>
+
+            <div class="blog-cta">
+                <h3>Ready to Liberate Your Dependencies?</h3>
+                <p>Upload your manifest and receive a quote in seconds. No guilt required.</p>
+                <a href="index.html#upload" class="btn btn-primary btn-large">
+                    <span>Upload Manifest</span>
+                    <span class="btn-arrow">→</span>
+                </a>
+            </div>
+
+            <div class="blog-footnotes">
+                <p><em>This essay is adapted from remarks delivered at FOSDEM 2026 in Brussels, Belgium. A recording of the full presentation is available upon request to customers with active liberation contracts.</em></p>
+                <p><em>MalusCorp International Holdings Ltd. is not responsible for any moral implications, existential crises, or late-night guilt spirals resulting from the use of our services. The MalusCorp-0 License is provided "as is," much like the open source software it replaces, except that we charge for it.</em></p>
+            </div>
+
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-icon" viewBox="0 0 50 50" width="24" height="24">
+                            <polygon points="25,2 48,15 48,35 25,48 2,35 2,15" fill="none" stroke="#C41E3A" stroke-width="2"/>
+                            <text x="25" y="30" text-anchor="middle" fill="#C41E3A" font-family="Playfair Display" font-size="14" font-weight="700">M</text>
+                        </svg>
+                        <span class="logo-text">MALUS</span>
+                    </div>
+                    <p>Liberating corporations from open source obligations since 2024.</p>
+                    <p class="footer-tagline">Liberate Open Source</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Single Package Liberation</a></li>
+                        <li><a href="#">Manifest Transformation</a></li>
+                        <li><a href="#">Enterprise Solutions</a></li>
+                        <li><a href="#">Emergency AGPL Removal</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Our Robots</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="#">Offshore Offices</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">MalusCorp-0 License</a></li>
+                        <li><a href="#">Indemnification Waiver</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MalusCorp International Holdings Ltd. Registered in [JURISDICTION WITHHELD].</p>
+                <p class="disclaimer">This service is provided "as is" without warranty. MalusCorp is not responsible for any legal consequences, moral implications, or late-night guilt spirals resulting from use of our services.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
