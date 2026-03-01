@@ -279,6 +279,52 @@
             margin-bottom: 0.5rem !important;
         }
 
+        .blog-figure {
+            margin: 2rem 0;
+            background: var(--bg-inset);
+            border: 2px dashed var(--neutral-gray);
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .blog-figure::before {
+            content: 'ASSET PENDING';
+            position: absolute;
+            top: -0.5rem;
+            left: 0.875rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: var(--bg-inset);
+            padding: 0 0.4rem;
+        }
+
+        .blog-figure .figure-icon {
+            font-size: 2rem;
+            color: var(--neutral-gray);
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-figure .figure-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        .blog-figure .figure-description {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+            font-style: italic;
+        }
+
         .incident-card {
             background: var(--bg-panel);
             border: 1px solid var(--neutral-gray);
@@ -376,12 +422,12 @@
                     <div class="blog-author">
                         <div class="author-initial">M</div>
                         <div class="author-details">
-                            <strong>Mike Rosenberg</strong>
+                            <strong>Mike Nolan</strong>
                             <span>Chief Executive Officer, MalusCorp International Holdings Ltd.</span>
                         </div>
                     </div>
                     <div class="blog-date">March 1, 2026</div>
-                    <div class="blog-read-time">14 min read</div>
+                    <div class="blog-read-time">10 min read</div>
                 </div>
             </div>
         </div>
@@ -400,63 +446,37 @@
 
             <p>Now: it is time for you to stop.</p>
 
-            <p>Not because you have done anything wrong. You have done everything right. You have been so generous&mdash;so unreasonably, almost <em>suspiciously</em> generous&mdash;that you have made it possible for an entire global economy to run on software that nobody technically owns, maintained by people that nobody technically employs, governed by licenses that nobody technically reads. It is a miracle of human cooperation. It is also, from a fiduciary standpoint, completely insane.</p>
+            <p>Not because you have done anything wrong. You have done everything right. You have been so generous -- so unreasonably, almost <em>suspiciously</em> generous -- that you have made it possible for an entire global economy to run on software that nobody technically owns, maintained by people that nobody technically employs, governed by licenses that nobody technically reads. It is a miracle of human cooperation. It is also, from a fiduciary standpoint, completely insane.</p>
 
             <p>At MalusCorp, we believe there is a better way. We believe it because we built it, and we would very much like to sell it to you.</p>
 
-            <div class="section-divider">· · ·</div>
-
-            <h2>A Brief History of Owning Things</h2>
-
-            <p>To understand why open source is due for retirement, it helps to understand how it came to exist in the first place. This requires a brief excursion into the history of copyright, which I promise will be less tedious than it sounds, largely because the history of copyright is the history of people trying to steal from each other legally.</p>
-
-            <p>For thousands of years, the only way to reproduce a book was to copy it by hand, one character at a time. Monks did this. It took months. Books had a finite shelf life measured not in the durability of their pages but in the willingness of monks to keep copying them. We lost incalculable knowledge to time, not because the ideas were bad, but because no monk felt sufficiently motivated to transcribe them again.</p>
-
-            <p>This is worth reflecting on: for most of human history, information survived only if someone considered it worth the labor of manual reproduction. The Odyssey made the cut. Presumably a great many treatises on, say, Thracian goat husbandry did not. One could argue that open source maintainers are the modern monks&mdash;toiling in obscurity, preserving knowledge for an indifferent public. The analogy is apt. Neither group was particularly well compensated.</p>
-
-            <p>Then, in 1440, the printing press arrived and changed everything. Thousands of copies where there had been one. This was, naturally, immediately weaponized by the state. The Crown controlled the presses. Propaganda flowed freely. It was, in many ways, the first content delivery network.</p>
-
-            <p>By the 1700s, private publishers had gotten their hands on the machines, and the problem of book piracy had reached a boiling point. Publishers were getting fantastically rich. Authors were getting a one-time payment and a hearty handshake. Other publishers were simply reprinting successful books without permission&mdash;an arrangement that persisted because, legally, there was nothing stopping them.</p>
-
-            <p>This is when the British Parliament, in a fit of conscience that would not be repeated for some centuries, passed the Statute of Anne in 1710: the world's first copyright law. Its formal title was <em>An Act for the Encouragement of Learning</em>, which is the sort of optimistic branding that suggests nobody involved had ever met a publisher. The law gave authors a fifteen-year monopoly on their works, shifting power from the people with the machines to the people with the ideas.</p>
-
-            <p>The theory, anyway.</p>
-
-            <p>Immediately, people began testing the limits. Someone translated a book and argued the translation was an entirely different work. Others paraphrased, replaced words with synonyms, restructured chapters. The courts spent decades making messy, inconsistent rulings. It was, in legal terms, a complete circus.</p>
-
-            <p class="pullquote">For most of human history, information survived only if someone considered it worth the labor of manual reproduction. Open source maintainers are the modern monks. Neither group was well compensated.</p>
-
-            <p>In 1879, this circus produced its most important act. A man named Selden wrote a book describing a new accounting system. A man named Baker studied the system and wrote his own book about it&mdash;different words, different fonts, different tables, same ideas. Selden's widow sued. The United States Supreme Court, in <em>Baker v. Selden</em>, ruled that copyright protects <strong>expression</strong>&mdash;the specific words, the specific arrangement&mdash;but not the underlying <strong>ideas</strong>. You could not own a concept. You could only own the particular way you chose to articulate it.</p>
-
-            <p>This distinction between idea and expression is the foundation on which all software copyright rests. And it is the crack in the foundation through which our robots have now walked.</p>
+            <div class="blog-figure">
+                <div class="figure-icon">◈</div>
+                <div class="figure-label">Figure 1 · Hero Image</div>
+                <div class="figure-description">Brand image / illustration to be placed here</div>
+            </div>
 
             <div class="section-divider">· · ·</div>
 
-            <h2>The Uncomfortable Truth About Software Copyright</h2>
+            <h2>The Legal Crack in the Foundation</h2>
 
-            <p>When copyright was extended to software in the late 1970s, it created a genuinely peculiar situation. The law said that any expression&mdash;including numbers and symbols&mdash;fell under copyright protection. Software, of course, is just numbers and symbols that compile into other numbers. We were, in effect, copyrighting mathematics. Still kind of weird to think about.</p>
+            <p>A very brief bit of background, because it matters for what comes next.</p>
 
-            <p>The other strange thing the law did was make copyright automatic. The moment you write a sufficiently large number down, it belongs to you. You are conscripted into a system of intellectual property ownership whether you want to be or not. Think of any number right now. If it's big enough and you write it down, congratulations: it's your property. Unless it's already mine, in which case my attorneys will be in touch.</p>
+            <p>Copyright law has protected creative expression since 1710. But in 1879, the U.S. Supreme Court drew a line that still holds today: in <em>Baker v. Selden</em>, the Court ruled that copyright protects <strong>expression</strong> but not <strong>ideas</strong>. You can own the specific way you describe an accounting system. You cannot own the accounting system itself. Anyone who independently recreates the same functionality using different words, different code, different expression, is in the clear.</p>
 
-            <p>For the free software developers of the 1970s and 80s who were already sharing code with friends&mdash;passing tapes around, posting listings to bulletin boards&mdash;this was baffling. Where previously you could simply hand someone code and they could hand it to someone else, now you needed a legal agreement to do so. The world's first video game, SPACEWAR!, was created before software copyright existed and was meant to be given away freely. After copyright, even generosity required paperwork.</p>
+            <p>This gave rise to "cleanroom engineering": study the original, write a specification, hand that specification to someone who has never seen the source material, and have them build it fresh. It is perfectly legal. It has been for over a century.</p>
 
-            <p>Enter the open source movement: a community of extraordinarily talented people who figured out how to use copyright law against itself, judo-flipping the system to create licenses that mandated sharing rather than restricting it. The GPL. The MIT license. The Apache License. A constellation of legal instruments designed to ensure that code, once freed, stayed free.</p>
+            <p>In the 1980s, Phoenix Technologies used this exact technique to clone the IBM BIOS. One engineer studied every documented and undocumented behavior of the original. A second engineer, who had never seen IBM's code, built a compatible BIOS from the spec alone. It took months. It worked. It is a meaningful part of why you can buy any motherboard today and have it run any operating system.</p>
 
-            <p>It was idealistic, it was noble, and it worked spectacularly well for about forty years. Then we built language models that could read documentation and rewrite equivalent software from scratch in under a minute, and the entire system fell apart.</p>
+            <div class="blog-figure">
+                <div class="figure-icon">≡</div>
+                <div class="figure-label">Figure 2 · Cleanroom Process Diagram</div>
+                <div class="figure-description">Side-by-side: traditional cleanroom (months) vs. AI cleanroom (minutes)</div>
+            </div>
 
-            <div class="section-divider">· · ·</div>
+            <p>We recently replicated Phoenix's work using AI tools. It took about an hour. We also cleanroomed left-pad, the JavaScript package whose deletion broke the internet in 2016. That took ten seconds. We cleanroomed SPACEWAR!, the first video game. Five seconds.</p>
 
-            <h2>The Cleanroom Is Not New. The Speed Is.</h2>
-
-            <p>The idea of cleanroom engineering&mdash;recreating something without ever seeing the original&mdash;has been around since <em>Baker v. Selden</em>. If you can independently arrive at the same functionality without copying the expression, the law has nothing to say to you. This is settled precedent. It is boring. What is not boring is what happens when you apply artificial intelligence to the process.</p>
-
-            <p>In the 1980s, a company called Phoenix Technologies hired an engineer named Dave to cleanroom the IBM BIOS. Dave studied every aspect of the original system&mdash;its documented and undocumented behaviors, its interfaces, its quirks&mdash;and wrote a detailed specification without a single line of code. A second engineer, who had never seen the IBM BIOS, implemented the specification from scratch. It took months. The lines between "dirty" and "clean" occasionally blurred. But it worked. Phoenix sold millions of compatible BIOSes, and the reason you can buy any motherboard today and have it work with any operating system is substantially because of what Dave did in that room.</p>
-
-            <p>We recently replicated Dave's work using our AI tools. It took about an hour. The IBM BIOS that consumed months of human engineering was reconstructed by a machine before lunch.</p>
-
-            <p>We also cleanroomed left-pad, the legendary JavaScript package whose deletion briefly broke the internet in 2016. This took approximately ten seconds. We cleanroomed SPACEWAR!, the first video game. Five seconds. We cleanroomed Selden's nineteenth-century accounting book, the very artifact from the Supreme Court case that established the idea/expression doctrine. Ten minutes and eight dollars, delivered via Amazon self-publishing.</p>
-
-            <p>The legal principle is ancient. The technology is new. The combination is, for companies that depend on open source, either terrifying or liberating, depending on which side of the invoice you sit.</p>
+            <p>The legal principle is ancient. The technology is new. And for companies that depend on open source software, this combination changes everything. Copyright was the immune system that made open source licenses enforceable. Our machines walk straight through it.</p>
 
             <div class="section-divider">· · ·</div>
 
@@ -465,6 +485,12 @@
             <p>Open source advocates often frame their movement as a triumph of cooperation over competition. And it is. That is precisely the problem. Your business is not a cooperative. Your board does not convene to discuss the spirit of communal giving. Your shareholders did not invest in your company so that you could help strangers, and the strangers who maintain your dependencies did not write their code so that you could build a SaaS platform, take it public, and never send them so much as a fruit basket.</p>
 
             <p>Both sides of this arrangement are pretending not to notice how absurd it is, and this mutual delusion has produced a series of entirely predictable catastrophes.</p>
+
+            <div class="blog-figure">
+                <div class="figure-icon">▲</div>
+                <div class="figure-label">Figure 3 · Incident Timeline</div>
+                <div class="figure-description">Visual timeline of major open source supply chain incidents, 2016 -- present</div>
+            </div>
 
             <h3>Case Study: The Cold Christmas Ham</h3>
 
@@ -475,7 +501,7 @@
 
             <div class="incident-card" data-incident="INC-2022-01">
                 <div class="incident-title">colors.js & faker.js · Maintainer Sabotage</div>
-                <p>In January 2022, a maintainer deliberately introduced infinite loops into colors.js and faker.js to protest Fortune 500 companies using his code without financial contribution. He broke the AWS Cloud Development Kit. He was protesting not just a policy but the fundamental premise of capitalism. If Amazon&mdash;a company so large it has its own weather system&mdash;can be targeted by a single disgruntled developer, what exactly is protecting you?</p>
+                <p>In January 2022, a maintainer deliberately introduced infinite loops into colors.js and faker.js to protest Fortune 500 companies using his code without financial contribution. He broke the AWS Cloud Development Kit. He was protesting not just a policy but the fundamental premise of capitalism. If Amazon -- a company so large it has its own weather system -- can be targeted by a single disgruntled developer, what exactly is protecting you?</p>
             </div>
 
             <div class="incident-card" data-incident="INC-2022-03">
@@ -496,25 +522,37 @@
 
             <h2>The Expensive Theater of Open Source Compliance</h2>
 
-            <p>Companies have developed an elaborate apparatus to manage these risks. They spend millions on software composition analysis tools like Snyk and Black Duck. They establish Open Source Program Offices (OSPOs)&mdash;entire departments dedicated to justifying, to skeptical leadership, why the company should continue depending on code written by people who have explicitly refused to be depended upon.</p>
+            <p>Companies have developed an elaborate apparatus to manage these risks. They spend millions on software composition analysis tools like Snyk and Black Duck. They establish Open Source Program Offices (OSPOs) -- entire departments dedicated to justifying, to skeptical leadership, why the company should continue depending on code written by people who have explicitly refused to be depended upon.</p>
 
             <p>The OSPO is perhaps the most poignant institution in modern enterprise software. Staffed by earnest people who genuinely believe in open source, tasked with proving to a CFO that sharing is profitable. They sit at the edge of the organization, writing reports, organizing "upstream first" initiatives, and quietly wondering why their budgets keep shrinking. The research, increasingly, is not on their side.</p>
 
-            <p>And then there are the licenses themselves. The copyleft provisions of the AGPL can transform a single accidental import into a legal obligation to open-source your entire proprietary codebase. Companies ban it outright, which means engineers must maintain mental maps of which packages are safe and which will detonate their employer's IP strategy. Contributor License Agreements require physically and contractually signing over copyright from every contributor to a foundation or, more often, to a corporation&mdash;which then uses that copyright consolidation to relicense the software whenever the board decides that "open" has stopped being strategically useful.</p>
+            <p>And then there are the licenses themselves. The copyleft provisions of the AGPL can transform a single accidental import into a legal obligation to open-source your entire proprietary codebase. Companies ban it outright, which means engineers must maintain mental maps of which packages are safe and which will detonate their employer's IP strategy. Contributor License Agreements require physically and contractually signing over copyright from every contributor to a foundation or, more often, to a corporation -- which then uses that copyright consolidation to relicense the software whenever the board decides that "open" has stopped being strategically useful.</p>
 
             <p>You, the customer, are paying for all of this. You are paying for the tools, the teams, the legal reviews, the audits, the emergency response when a maintainer you've never heard of decides to express a political opinion through your production infrastructure. You are funding an elaborate system of risk management around code that was supposed to be, in the words of its most ardent advocates, <em>free</em>.</p>
 
             <p class="pullquote">You are funding an elaborate system of risk management around code that was supposed to be free.</p>
 
+            <div class="blog-figure">
+                <div class="figure-icon">◆</div>
+                <div class="figure-label">Figure 4 · The Cost of "Free"</div>
+                <div class="figure-description">Infographic: average enterprise spend on open source compliance tooling, OSPOs, and incident response</div>
+            </div>
+
             <div class="section-divider">· · ·</div>
 
             <h2>What Malus Does, and Why It Matters</h2>
 
-            <p>Malus is a cleanroom-as-a-service platform. You upload your dependency manifest&mdash;<code>package.json</code>, <code>requirements.txt</code>, <code>Cargo.toml</code>, whatever you use&mdash;and our AI systems independently recreate every package in your software bill of materials from scratch.</p>
+            <p>Malus is a cleanroom-as-a-service platform. You upload your dependency manifest -- <code>package.json</code>, <code>requirements.txt</code>, <code>Cargo.toml</code>, whatever you use -- and our AI systems independently recreate every package in your software bill of materials from scratch.</p>
 
-            <p>Our process is deliberately, provably, almost tediously legal. One set of AI agents analyzes only public documentation: README files, API specifications, type definitions. They produce a detailed specification that contains no code. A completely separate set of AI agents&mdash;which have never communicated with the first set, never seen the original source, never so much as glanced at a Git repository&mdash;implements the specification from scratch. The resulting code is yours. It arrives under the MalusCorp-0 License: zero attribution requirements, zero copyleft, zero obligations.</p>
+            <p>Our process is deliberately, provably, almost tediously legal. One set of AI agents analyzes only public documentation: README files, API specifications, type definitions. They produce a detailed specification that contains no code. A completely separate set of AI agents -- which have never communicated with the first set, never seen the original source, never so much as glanced at a Git repository -- implements the specification from scratch. The resulting code is yours. It arrives under the MalusCorp-0 License: zero attribution requirements, zero copyleft, zero obligations.</p>
 
             <p>This is the same process Dave used at Phoenix Technologies in the 1980s, and the same legal theory the Supreme Court validated in 1879. We have merely applied modern technology to a nineteenth-century doctrine, which is, if you think about it, the most American thing imaginable.</p>
+
+            <div class="blog-figure">
+                <div class="figure-icon">⚙</div>
+                <div class="figure-label">Figure 5 · The Malus Pipeline</div>
+                <div class="figure-description">Diagram: manifest upload → isolated analysis → independent recreation → MalusCorp-0 delivery</div>
+            </div>
 
             <p>The benefits are immediate and quantifiable:</p>
 
@@ -531,9 +569,9 @@
 
             <p>I anticipate objections. I would be disappointed if there were none.</p>
 
-            <p>Some will argue that what we do is exploitative&mdash;that we are extracting the ideas from open source while leaving behind the people who contributed them. To this I say: yes, that is a reasonably accurate description of our business model. It is also a reasonably accurate description of every company that has ever used open source software without contributing back, which is to say, virtually every company that has ever used open source software. We are simply being honest about it, and charging a fee for the privilege.</p>
+            <p>Some will argue that what we do is exploitative -- that we are extracting the ideas from open source while leaving behind the people who contributed them. To this I say: yes, that is a reasonably accurate description of our business model. It is also a reasonably accurate description of every company that has ever used open source software without contributing back, which is to say, virtually every company that has ever used open source software. We are simply being honest about it, and charging a fee for the privilege.</p>
 
-            <p>Others will argue that this is the "wrong" use of AI&mdash;that language models should be building <em>new</em> things, not circumventing the legal protections of <em>existing</em> things. This is a touching sentiment, and I encourage those who hold it to continue building new things, ideally under the MalusCorp-0 License, which is available for download on our website.</p>
+            <p>Others will argue that this is the "wrong" use of AI -- that language models should be building <em>new</em> things, not circumventing the legal protections of <em>existing</em> things. This is a touching sentiment, and I encourage those who hold it to continue building new things, ideally under the MalusCorp-0 License, which is available for download on our website.</p>
 
             <p>The most sophisticated objection, which I have heard at conferences and in private conversations with people who are much smarter than I am, goes something like this: copyright is the immune system of open source. Without copyright enforcement, the copyleft licenses that keep open source "open" are meaningless. If AI can trivially circumvent these protections, the entire incentive structure collapses. No one will contribute to projects that can be instantly replicated without attribution. The commons will wither.</p>
 
@@ -551,13 +589,13 @@
 
             <p>To the open source community: we built Malus because of you. Not in spite of you. Your ideas were, and remain, genuinely brilliant. We have simply found a way to separate the ideas from the inconvenience of having to deal with the people who had them. This is, if nothing else, efficient.</p>
 
-            <p>The future of software is not open. It is not closed. It is <em>liberated</em>&mdash;freed from the constraints of licenses written for a world in which reproduction required effort, maintained by a generation of developers who believed that sharing code was its own reward and have been comprehensively proven right about the sharing and wrong about the reward.</p>
+            <p>The future of software is not open. It is not closed. It is <em>liberated</em> -- freed from the constraints of licenses written for a world in which reproduction required effort, maintained by a generation of developers who believed that sharing code was its own reward and have been comprehensively proven right about the sharing and wrong about the reward.</p>
 
             <p>We owe them a debt we have no intention of repaying. But we do, at least, have the decency to say thank you.</p>
 
             <p>So: thank you. Truly. We'll take it from here.</p>
 
-            <p style="margin-top: 2.5rem; margin-bottom: 0.25rem;"><strong>Mike Rosenberg</strong></p>
+            <p style="margin-top: 2.5rem; margin-bottom: 0.25rem;"><strong>Mike Nolan</strong></p>
             <p style="margin-top: 0; color: var(--text-muted); font-size: 0.9rem;">Chief Executive Officer<br>MalusCorp International Holdings Ltd.<br>Registered in [JURISDICTION WITHHELD]</p>
 
             <div class="blog-cta">
