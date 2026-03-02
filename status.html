@@ -1200,6 +1200,11 @@
                         consecutiveFetchErrors = 0;
                         hideStatusBanner();
                         showStatus(data);
+                        if (data.queue_depth && data.queue_depth > 50) {
+                            showStatusBanner('Our servers are under heavy load. Clean rooming may take longer than usual. Your order is safe and processing will continue.');
+                            var banner = document.getElementById('apiStatusBanner');
+                            if (banner) banner.classList.add('warning');
+                        }
                     }
                 })
                 .catch(function(err) {

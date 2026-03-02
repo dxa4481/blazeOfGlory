@@ -279,87 +279,436 @@
             margin-bottom: 0.5rem !important;
         }
 
-        .blog-figure {
-            margin: 2rem 0;
-            background: var(--bg-inset);
-            border: 2px dashed var(--neutral-gray);
-            border-radius: 8px;
-            padding: 3rem 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .blog-figure::before {
-            content: 'ASSET PENDING';
-            position: absolute;
-            top: -0.5rem;
-            left: 0.875rem;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.5rem;
-            color: var(--text-muted);
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            background: var(--bg-inset);
-            padding: 0 0.4rem;
-        }
-
-        .blog-figure .figure-icon {
-            font-size: 2rem;
-            color: var(--neutral-gray);
-            margin-bottom: 0.75rem;
-        }
-
-        .blog-figure .figure-label {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 500;
-        }
-
-        .blog-figure .figure-description {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.35rem;
-            font-style: italic;
-        }
-
-        .incident-card {
+        .blog-diagram {
+            margin: 2.5rem 0;
             background: var(--bg-panel);
             border: 1px solid var(--neutral-gray);
             border-radius: 8px;
-            padding: 1.25rem;
-            margin: 1.5rem 0;
+            overflow: hidden;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             position: relative;
         }
 
-        .incident-card::before {
-            content: attr(data-incident);
+        .blog-diagram .diagram-header {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 0.6rem 1rem;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-dark);
+            font-weight: 500;
+        }
+
+        .blog-diagram .diagram-content {
+            padding: 1.5rem;
+        }
+
+        /* Figure 1: Hero emblem */
+        .emblem-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .emblem-container .emblem-tagline {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        .emblem-container .emblem-rule {
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+            margin: 0.75rem 0;
+        }
+
+        .emblem-container .emblem-sub {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        /* Figure 2: Cleanroom comparison */
+        .cleanroom-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .cleanroom-panel {
+            background: var(--bg-inset);
+            border: 1px solid var(--border-dark);
+            border-radius: 4px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .cleanroom-panel.panel-old {
+            border-color: var(--border-dark);
+        }
+
+        .cleanroom-panel.panel-new {
+            border-color: var(--accent-red);
+            background: rgba(196, 30, 58, 0.02);
+        }
+
+        .cleanroom-panel .panel-era {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .cleanroom-panel.panel-new .panel-era {
+            color: var(--accent-red);
+        }
+
+        .cleanroom-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            align-items: center;
+        }
+
+        .cr-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            width: 100%;
+            justify-content: center;
+        }
+
+        .cr-step .cr-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-dark);
+        }
+
+        .panel-new .cr-step .cr-icon {
+            border-color: rgba(196, 30, 58, 0.25);
+            background: rgba(196, 30, 58, 0.05);
+        }
+
+        .cr-arrow {
+            color: var(--text-muted);
+            font-size: 0.65rem;
+        }
+
+        .cr-duration {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-dark);
+        }
+
+        .panel-old .cr-duration {
+            color: var(--text-secondary);
+        }
+
+        .panel-new .cr-duration {
+            color: var(--accent-red);
+        }
+
+        .cr-duration small {
+            display: block;
+            font-size: 0.5rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        /* Figure 3: Timeline */
+        .timeline-track {
+            position: relative;
+            padding: 0.5rem 0 1rem;
+        }
+
+        .timeline-line {
             position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+            top: 22px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--neutral-gray);
+        }
+
+        .timeline-events {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-event {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .tl-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            border: 2px solid var(--bg-panel);
+            box-shadow: 0 0 0 2px var(--accent-red);
+            margin-bottom: 0.6rem;
+        }
+
+        .tl-year {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .tl-label {
             font-family: 'IBM Plex Mono', monospace;
             font-size: 0.45rem;
-            color: var(--accent-red);
-            letter-spacing: 0.08em;
+            color: var(--text-muted);
             text-transform: uppercase;
+            letter-spacing: 0.06em;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 80px;
         }
 
-        .incident-card .incident-title {
+        .tl-tag {
+            margin-top: 0.35rem;
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.6rem;
+            font-size: 0.4rem;
+            padding: 0.1rem 0.3rem;
+            border-radius: 1px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
             font-weight: 600;
+        }
+
+        .tl-tag.tag-vuln {
+            background: rgba(196, 30, 58, 0.08);
+            color: var(--accent-red);
+            border: 1px solid rgba(196, 30, 58, 0.2);
+        }
+
+        .tl-tag.tag-sabotage {
+            background: rgba(139, 111, 58, 0.08);
+            color: var(--amber-primary);
+            border: 1px solid rgba(139, 111, 58, 0.2);
+        }
+
+        .tl-tag.tag-worm {
+            background: rgba(26, 26, 26, 0.06);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-dark);
+        }
+
+        /* Figure 4: Cost bars */
+        .cost-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .cost-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 60px;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .cost-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .cost-bar-track {
+            height: 20px;
+            background: var(--bg-inset);
+            border: 1px solid var(--border-dark);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .cost-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(196, 30, 58, 0.15), rgba(196, 30, 58, 0.3));
+            border-right: 2px solid var(--accent-red);
+        }
+
+        .cost-bar-fill.fill-green {
+            background: linear-gradient(90deg, rgba(74, 124, 74, 0.15), rgba(74, 124, 74, 0.3));
+            border-right-color: var(--pass-primary);
+        }
+
+        .cost-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .cost-total {
+            display: grid;
+            grid-template-columns: 120px 1fr 60px;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+            padding-top: 0.75rem;
+            border-top: 2px solid var(--border-dark);
+        }
+
+        .cost-total .cost-label {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .cost-total .cost-value {
+            color: var(--accent-red);
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+
+        .cost-vs {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px dashed var(--border-dark);
+        }
+
+        .cost-vs .vs-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: var(--text-label);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
-        .incident-card p {
-            font-size: 0.9rem !important;
-            margin-bottom: 0 !important;
+        .cost-vs .vs-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--pass-primary);
+        }
+
+        .cost-vs .vs-note {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+            font-style: italic;
+        }
+
+        /* Figure 5: Pipeline flow */
+        .pipeline-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+
+        .pipe-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.75rem 0.5rem;
+            min-width: 80px;
+        }
+
+        .pipe-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: var(--bg-inset);
+            border: 1px solid var(--border-dark);
+        }
+
+        .pipe-stage.stage-input .pipe-icon-box {
+            border-color: var(--border-dark);
+        }
+
+        .pipe-stage.stage-process .pipe-icon-box {
+            border-color: rgba(196, 30, 58, 0.3);
+            background: rgba(196, 30, 58, 0.04);
+        }
+
+        .pipe-stage.stage-wall .pipe-icon-box {
+            background: var(--accent-red);
+            border-color: var(--red-dark);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .pipe-stage.stage-output .pipe-icon-box {
+            border-color: var(--pass-border);
+            background: rgba(74, 124, 74, 0.05);
+        }
+
+        .pipe-stage-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.45rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .pipe-arrow {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .cleanroom-compare {
+                grid-template-columns: 1fr;
+            }
+            .cost-row, .cost-total {
+                grid-template-columns: 80px 1fr 50px;
+            }
+            .cost-label { font-size: 0.5rem; }
+            .timeline-events { gap: 0.25rem; }
+            .tl-label { font-size: 0.4rem; max-width: 60px; }
+            .pipeline-flow { gap: 0.15rem; }
+            .pipe-stage { min-width: 60px; padding: 0.5rem 0.25rem; }
+            .pipe-icon-box { width: 32px; height: 32px; font-size: 0.8rem; }
         }
 
         @media (max-width: 768px) {
@@ -446,14 +795,27 @@
 
             <p>Now: it is time for you to stop.</p>
 
-            <p>Not because you have done anything wrong. You have done everything right. You have been so generous -- so unreasonably, almost <em>suspiciously</em> generous -- that you have made it possible for an entire global economy to run on software that nobody technically owns, maintained by people that nobody technically employs, governed by licenses that nobody technically reads. It is a miracle of human cooperation. It is also, from a fiduciary standpoint, completely insane.</p>
+            <p>Not because you have done anything wrong. You have done everything right. You have been so generous, so unreasonably, almost <em>suspiciously</em> generous, that you have made it possible for an entire global economy to run on software that nobody technically owns, maintained by people that nobody technically employs, governed by licenses that nobody technically reads. It is a miracle of human cooperation. It is also, from a fiduciary standpoint, completely insane.</p>
 
             <p>At MalusCorp, we believe there is a better way. We believe it because we built it, and we would very much like to sell it to you.</p>
 
-            <div class="blog-figure">
-                <div class="figure-icon">◈</div>
-                <div class="figure-label">Figure 1 · Hero Image</div>
-                <div class="figure-description">Brand image / illustration to be placed here</div>
+            <div class="blog-diagram">
+                <div class="diagram-content">
+                    <div class="emblem-container">
+                        <svg viewBox="0 0 200 200" width="160" height="160">
+                            <polygon points="100,8 188,53 188,147 100,192 12,147 12,53" fill="none" stroke="#C41E3A" stroke-width="1.5"/>
+                            <polygon points="100,28 168,63 168,137 100,172 32,137 32,63" fill="none" stroke="#E8E8E8" stroke-width="1"/>
+                            <polygon points="100,48 148,73 148,127 100,152 52,127 52,73" fill="rgba(196,30,58,0.06)" stroke="#C41E3A" stroke-width="1" stroke-dasharray="4,3"/>
+                            <text x="100" y="92" text-anchor="middle" fill="#1A1A1A" font-family="Playfair Display, serif" font-size="36" font-weight="700">M</text>
+                            <text x="100" y="115" text-anchor="middle" fill="#666" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing="3" text-transform="uppercase">CLEAN ROOM AS A SERVICE</text>
+                            <line x1="70" y1="122" x2="130" y2="122" stroke="#C41E3A" stroke-width="0.75" opacity="0.5"/>
+                            <text x="100" y="135" text-anchor="middle" fill="#999" font-family="IBM Plex Mono, monospace" font-size="5.5" letter-spacing="2">EST. 2024</text>
+                        </svg>
+                        <div class="emblem-rule"></div>
+                        <div class="emblem-tagline">Liberate Open Source</div>
+                        <div class="emblem-sub">A dispatch from MalusCorp International Holdings Ltd.</div>
+                    </div>
+                </div>
             </div>
 
             <div class="section-divider">· · ·</div>
@@ -468,10 +830,38 @@
 
             <p>In the 1980s, Phoenix Technologies used this exact technique to clone the IBM BIOS. One engineer studied every documented and undocumented behavior of the original. A second engineer, who had never seen IBM's code, built a compatible BIOS from the spec alone. It took months. It worked. It is a meaningful part of why you can buy any motherboard today and have it run any operating system.</p>
 
-            <div class="blog-figure">
-                <div class="figure-icon">≡</div>
-                <div class="figure-label">Figure 2 · Cleanroom Process Diagram</div>
-                <div class="figure-description">Side-by-side: traditional cleanroom (months) vs. AI cleanroom (minutes)</div>
+            <div class="blog-diagram">
+                <div class="diagram-header">Fig. 2 · Cleanroom Engineering: Then and Now</div>
+                <div class="diagram-content">
+                    <div class="cleanroom-compare">
+                        <div class="cleanroom-panel panel-old">
+                            <div class="panel-era">Phoenix Technologies · 1984</div>
+                            <div class="cleanroom-steps">
+                                <div class="cr-step"><div class="cr-icon">👤</div> Engineer reads IBM BIOS</div>
+                                <div class="cr-arrow">↓</div>
+                                <div class="cr-step"><div class="cr-icon">≡</div> Writes specification</div>
+                                <div class="cr-arrow">↓ firewall ↓</div>
+                                <div class="cr-step"><div class="cr-icon">👤</div> Second engineer implements</div>
+                                <div class="cr-arrow">↓</div>
+                                <div class="cr-step"><div class="cr-icon">✓</div> Compatible BIOS</div>
+                            </div>
+                            <div class="cr-duration">4+ months<small>Entire engineering team</small></div>
+                        </div>
+                        <div class="cleanroom-panel panel-new">
+                            <div class="panel-era">Malus · 2026</div>
+                            <div class="cleanroom-steps">
+                                <div class="cr-step"><div class="cr-icon">◉</div> Robot A reads documentation</div>
+                                <div class="cr-arrow">↓</div>
+                                <div class="cr-step"><div class="cr-icon">≡</div> Generates specification</div>
+                                <div class="cr-arrow">↓ firewall ↓</div>
+                                <div class="cr-step"><div class="cr-icon">◈</div> Robot B implements from spec</div>
+                                <div class="cr-arrow">↓</div>
+                                <div class="cr-step"><div class="cr-icon">✓</div> Liberated package</div>
+                            </div>
+                            <div class="cr-duration">&lt; 5 minutes<small>Zero humans involved</small></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <p>We recently replicated Phoenix's work using AI tools. It took about an hour. We also cleanroomed left-pad, the JavaScript package whose deletion broke the internet in 2016. That took ten seconds. We cleanroomed SPACEWAR!, the first video game. Five seconds.</p>
@@ -482,76 +872,165 @@
 
             <h2>The Structural Case Against Depending on Strangers</h2>
 
-            <p>Open source advocates often frame their movement as a triumph of cooperation over competition. And it is. That is precisely the problem. Your business is not a cooperative. Your board does not convene to discuss the spirit of communal giving. Your shareholders did not invest in your company so that you could help strangers, and the strangers who maintain your dependencies did not write their code so that you could build a SaaS platform, take it public, and never send them so much as a fruit basket.</p>
+            <p>The appeal of open source has always been that it is free, that it is transparent, and that it is maintained by a global community of passionate developers. All three of these claims are true. All three are also the source of the problem.</p>
 
-            <p>Both sides of this arrangement are pretending not to notice how absurd it is, and this mutual delusion has produced a series of entirely predictable catastrophes.</p>
+            <p>Free means no contract. Transparent means every attacker can read the code too. And "maintained by a global community" is a polite way of saying "maintained by whoever happens to feel like it on any given Tuesday." Your company has built its entire product on top of this arrangement, and the arrangement has no SLA.</p>
 
-            <div class="blog-figure">
-                <div class="figure-icon">▲</div>
-                <div class="figure-label">Figure 3 · Incident Timeline</div>
-                <div class="figure-description">Visual timeline of major open source supply chain incidents, 2016 -- present</div>
+            <p>The risk is not theoretical. Open source supply chains fail in two distinct and equally alarming ways: they break by accident, and they break on purpose.</p>
+
+            <div class="blog-diagram">
+                <div class="diagram-header">Fig. 3 · Open Source Supply Chain Incidents · 2016 to Present</div>
+                <div class="diagram-content">
+                    <div class="timeline-track">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-events">
+                            <div class="timeline-event">
+                                <div class="tl-dot"></div>
+                                <div class="tl-year">2016</div>
+                                <div class="tl-label">left-pad deleted from npm</div>
+                                <div class="tl-tag tag-sabotage">Sabotage</div>
+                            </div>
+                            <div class="timeline-event">
+                                <div class="tl-dot"></div>
+                                <div class="tl-year">2021</div>
+                                <div class="tl-label">Log4Shell CVE-2021-44228</div>
+                                <div class="tl-tag tag-vuln">Critical CVE</div>
+                            </div>
+                            <div class="timeline-event">
+                                <div class="tl-dot"></div>
+                                <div class="tl-year">2022</div>
+                                <div class="tl-label">colors.js & faker.js sabotaged</div>
+                                <div class="tl-tag tag-sabotage">Sabotage</div>
+                            </div>
+                            <div class="timeline-event">
+                                <div class="tl-dot"></div>
+                                <div class="tl-year">2022</div>
+                                <div class="tl-label">node-ipc geopolitical payload</div>
+                                <div class="tl-tag tag-sabotage">Sabotage</div>
+                            </div>
+                            <div class="timeline-event">
+                                <div class="tl-dot"></div>
+                                <div class="tl-year">2025</div>
+                                <div class="tl-label">Shai Hulud 2.0 npm worm</div>
+                                <div class="tl-tag tag-worm">Worm</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <h3>Case Study: The Cold Christmas Ham</h3>
+            <p>The accidental failures are terrifying enough. Log4Shell, the vulnerability discovered in Apache's Log4j library in December 2021, allowed remote code execution on any system that happened to log a specially crafted string. No authentication. No exploit chain. Just logging user input. It sat inside a Java logging library that nobody thought about, buried under layers of transitive dependencies, quietly embedded in government systems, cloud platforms, enterprise applications, and whatever it is your company runs. Engineers across every industry spent their Christmas holidays patching it, while the people who actually maintained Log4j, unpaid volunteers by and large, fielded a planet's worth of panicked emails. This was not a failure of any individual. It was the natural consequence of building critical global infrastructure on code that nobody is formally responsible for maintaining.</p>
 
-            <div class="incident-card" data-incident="INC-2021-12">
-                <div class="incident-title">Log4Shell · CVE-2021-44228</div>
-                <p>In December 2021, a critical vulnerability was discovered in Apache Log4j, a Java logging library embedded in an enormous portion of the global software stack. The vulnerability, Log4Shell, allowed remote code execution by getting a system to log a specially crafted string. No authentication required. No exploit chain. Just logging user-controlled data could lead to full system compromise. Engineers across every industry spent their holidays patching, updating, and explaining to executives what a "transient dependency" was. The ham got cold. The maintainers got emails.</p>
-            </div>
+            <p>The deliberate failures are worse, because they reveal something the community would rather not discuss: the people who write your dependencies have opinions, grievances, and occasionally a flair for the dramatic. In January 2022, the maintainer of colors.js and faker.js, two libraries depended upon by thousands of projects including the AWS Cloud Development Kit, introduced infinite loops into his own code to protest what he saw as Fortune 500 exploitation. His complaint was not unreasonable. His solution, however, broke production systems at companies that had never heard of him. Two months later, the maintainer of node-ipc embedded a file-wiping payload targeting Russian and Belarusian IP addresses to protest the invasion of Ukraine. A package you might have installed to handle inter-process communication was now conducting its own foreign policy. The open source community called these incidents "outliers." From where I sit, they look more like legitimate forms of protest by people who are exploited.</p>
 
-            <div class="incident-card" data-incident="INC-2022-01">
-                <div class="incident-title">colors.js & faker.js · Maintainer Sabotage</div>
-                <p>In January 2022, a maintainer deliberately introduced infinite loops into colors.js and faker.js to protest Fortune 500 companies using his code without financial contribution. He broke the AWS Cloud Development Kit. He was protesting not just a policy but the fundamental premise of capitalism. If Amazon -- a company so large it has its own weather system -- can be targeted by a single disgruntled developer, what exactly is protecting you?</p>
-            </div>
+            <p>And then there are the attacks that don't require the maintainer's cooperation at all. The Shai Hulud 2.0 worm, which swept through the npm ecosystem in 2025, compromised hundreds of packages by targeting the accounts of a few ordinary JavaScript developers. It didn't need a disgruntled idealist or a geopolitical agenda. It just needed a weak password and a dependency graph, and from there it achieved remote code execution on thousands of systems. The maintainers whose packages were compromised had no support contracts with their downstream users, no security teams, and in many cases no idea who was running their code or why. They were, after all, volunteers.</p>
 
-            <div class="incident-card" data-incident="INC-2022-03">
-                <div class="incident-title">node-ipc · Geopolitical Payload</div>
-                <p>The maintainer of node-ipc, a popular JavaScript package, introduced a file-wiping payload targeting Russian and Belarusian IP addresses to protest the invasion of Ukraine. A dependency you installed to handle inter-process communication was now making foreign policy decisions on your behalf. Whatever your views on the conflict, your CI/CD pipeline should probably not have an opinion.</p>
-            </div>
+            <p>This is the bargain at the heart of open source: you get the code for free, and in exchange, you accept that the person who wrote it owes you nothing. Not patches, not stability, not political neutrality, not even the courtesy of not deleting the entire package one afternoon because they felt like it. The community calls this a feature. Your shareholders might use a different term. Structural risk.</p>
 
-            <div class="incident-card" data-incident="INC-2025-07">
-                <div class="incident-title">Shai Hulud 2.0 · NPM Worm</div>
-                <p>The worm Shai Hulud 2.0 compromised hundreds of NPM packages by first compromising the accounts of a few average JavaScript developers. From there, it spread through the dependency graph, achieving remote code execution on thousands of systems. The affected package maintainers had no support contracts, no relationships with downstream users, and in many cases no particular interest in their downstream users. They were hobbyists. The companies depending on them were not.</p>
-            </div>
-
-            <p>These are not edge cases. These are not aberrations. This is the system working exactly as designed: millions of interdependent packages maintained by volunteers with no contractual obligations to anyone, governed by licenses that impose obligations on the users but almost none on the maintainers, in an ecosystem where a single compromised account can cascade into thousands of affected systems.</p>
-
-            <p>The open source community's response to these incidents has generally been to request more funding, more appreciation, and more corporate participation. This is understandable. It is also, from the perspective of a Fortune 500 risk officer, equivalent to being told that the solution to your house catching fire is to be nicer to arsonists.</p>
+            <p>The community's preferred solution to these problems is, reliably, more community: more funding, more appreciation, more corporate participation, more conferences where people in lanyards discuss the importance of "giving back." This is understandable. It is also, from the perspective of a Fortune 500 risk officer, absolutely nonsensical. You invest more money, and still have no control. Blindly trusting stranges has never been a wise business strategy.</p>
 
             <div class="section-divider">· · ·</div>
 
             <h2>The Expensive Theater of Open Source Compliance</h2>
 
-            <p>Companies have developed an elaborate apparatus to manage these risks. They spend millions on software composition analysis tools like Snyk and Black Duck. They establish Open Source Program Offices (OSPOs) -- entire departments dedicated to justifying, to skeptical leadership, why the company should continue depending on code written by people who have explicitly refused to be depended upon.</p>
+            <p>Companies have developed an elaborate apparatus to manage these risks. They spend millions on software composition analysis tools like Snyk and Black Duck. They establish Open Source Program Offices, entire departments dedicated to justifying, to skeptical leadership, why the company should continue depending on code written by people who have explicitly refused to be depended upon.</p>
 
             <p>The OSPO is perhaps the most poignant institution in modern enterprise software. Staffed by earnest people who genuinely believe in open source, tasked with proving to a CFO that sharing is profitable. They sit at the edge of the organization, writing reports, organizing "upstream first" initiatives, and quietly wondering why their budgets keep shrinking. The research, increasingly, is not on their side.</p>
 
-            <p>And then there are the licenses themselves. The copyleft provisions of the AGPL can transform a single accidental import into a legal obligation to open-source your entire proprietary codebase. Companies ban it outright, which means engineers must maintain mental maps of which packages are safe and which will detonate their employer's IP strategy. Contributor License Agreements require physically and contractually signing over copyright from every contributor to a foundation or, more often, to a corporation -- which then uses that copyright consolidation to relicense the software whenever the board decides that "open" has stopped being strategically useful.</p>
+            <p>And then there are the licenses themselves. The copyleft provisions of the AGPL can transform a single accidental import into a legal obligation to open-source your entire proprietary codebase. Companies ban it outright, which means engineers must maintain mental maps of which packages are safe and which will detonate their employer's IP strategy. Contributor License Agreements require physically and contractually signing over copyright from every contributor to a foundation or, more often, to a corporation, which then uses that copyright consolidation to relicense the software whenever the board decides that "open" has stopped being strategically useful.</p>
 
             <p>You, the customer, are paying for all of this. You are paying for the tools, the teams, the legal reviews, the audits, the emergency response when a maintainer you've never heard of decides to express a political opinion through your production infrastructure. You are funding an elaborate system of risk management around code that was supposed to be, in the words of its most ardent advocates, <em>free</em>.</p>
 
             <p class="pullquote">You are funding an elaborate system of risk management around code that was supposed to be free.</p>
 
-            <div class="blog-figure">
-                <div class="figure-icon">◆</div>
-                <div class="figure-label">Figure 4 · The Cost of "Free"</div>
-                <div class="figure-description">Infographic: average enterprise spend on open source compliance tooling, OSPOs, and incident response</div>
+            <div class="blog-diagram">
+                <div class="diagram-header">Fig. 4 · The Annual Cost of "Free" · Avg. Enterprise (500+ Engineers)</div>
+                <div class="diagram-content">
+                    <div class="cost-bars">
+                        <div class="cost-row">
+                            <div class="cost-label">SCA Tooling</div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 85%"></div></div>
+                            <div class="cost-value">$1.2M</div>
+                        </div>
+                        <div class="cost-row">
+                            <div class="cost-label">OSPO Team</div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 60%"></div></div>
+                            <div class="cost-value">$850K</div>
+                        </div>
+                        <div class="cost-row">
+                            <div class="cost-label">Legal Review</div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 50%"></div></div>
+                            <div class="cost-value">$700K</div>
+                        </div>
+                        <div class="cost-row">
+                            <div class="cost-label">Incident Resp.</div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 70%"></div></div>
+                            <div class="cost-value">$980K</div>
+                        </div>
+                        <div class="cost-row">
+                            <div class="cost-label">CLA Admin</div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 20%"></div></div>
+                            <div class="cost-value">$270K</div>
+                        </div>
+                        <div class="cost-total">
+                            <div class="cost-label">Total</div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 100%"></div></div>
+                            <div class="cost-value">$4.0M</div>
+                        </div>
+                    </div>
+                    <div class="cost-vs">
+                        <div class="vs-label">Malus Total Liberation Package</div>
+                        <div class="vs-value">$50K / year</div>
+                        <div class="vs-note">98.75% reduction. No OSPOs harmed in the making of this estimate.*</div>
+                    </div>
+                </div>
             </div>
 
             <div class="section-divider">· · ·</div>
 
             <h2>What Malus Does, and Why It Matters</h2>
 
-            <p>Malus is a cleanroom-as-a-service platform. You upload your dependency manifest -- <code>package.json</code>, <code>requirements.txt</code>, <code>Cargo.toml</code>, whatever you use -- and our AI systems independently recreate every package in your software bill of materials from scratch.</p>
+            <p>Malus is a cleanroom-as-a-service platform. You upload your dependency manifest (<code>package.json</code>, <code>requirements.txt</code>, <code>Cargo.toml</code>, whatever you use) and our AI systems independently recreate every package in your software bill of materials from scratch.</p>
 
-            <p>Our process is deliberately, provably, almost tediously legal. One set of AI agents analyzes only public documentation: README files, API specifications, type definitions. They produce a detailed specification that contains no code. A completely separate set of AI agents -- which have never communicated with the first set, never seen the original source, never so much as glanced at a Git repository -- implements the specification from scratch. The resulting code is yours. It arrives under the MalusCorp-0 License: zero attribution requirements, zero copyleft, zero obligations.</p>
+            <p>Our process is deliberately, provably, almost tediously legal. One set of AI agents analyzes only public documentation: README files, API specifications, type definitions. They produce a detailed specification that contains no code. A completely separate set of AI agents, which have never communicated with the first set, never seen the original source, never so much as glanced at a Git repository, implements the specification from scratch. The resulting code is yours. It arrives under the MalusCorp-0 License: zero attribution requirements, zero copyleft, zero obligations.</p>
 
             <p>This is the same process Dave used at Phoenix Technologies in the 1980s, and the same legal theory the Supreme Court validated in 1879. We have merely applied modern technology to a nineteenth-century doctrine, which is, if you think about it, the most American thing imaginable.</p>
 
-            <div class="blog-figure">
-                <div class="figure-icon">⚙</div>
-                <div class="figure-label">Figure 5 · The Malus Pipeline</div>
-                <div class="figure-description">Diagram: manifest upload → isolated analysis → independent recreation → MalusCorp-0 delivery</div>
+            <div class="blog-diagram">
+                <div class="diagram-header">Fig. 5 · The Malus Liberation Pipeline · Rev 3.1</div>
+                <div class="diagram-content">
+                    <div class="pipeline-flow">
+                        <div class="pipe-stage stage-input">
+                            <div class="pipe-icon-box">▶</div>
+                            <div class="pipe-stage-label">Upload<br>Manifest</div>
+                        </div>
+                        <div class="pipe-arrow">→</div>
+                        <div class="pipe-stage stage-process">
+                            <div class="pipe-icon-box">◉</div>
+                            <div class="pipe-stage-label">Robot A<br>Reads Docs</div>
+                        </div>
+                        <div class="pipe-arrow">→</div>
+                        <div class="pipe-stage stage-process">
+                            <div class="pipe-icon-box">≡</div>
+                            <div class="pipe-stage-label">Generate<br>Spec</div>
+                        </div>
+                        <div class="pipe-arrow">→</div>
+                        <div class="pipe-stage stage-wall">
+                            <div class="pipe-icon-box">▮▮</div>
+                            <div class="pipe-stage-label">Isolation<br>Firewall</div>
+                        </div>
+                        <div class="pipe-arrow">→</div>
+                        <div class="pipe-stage stage-process">
+                            <div class="pipe-icon-box">◈</div>
+                            <div class="pipe-stage-label">Robot B<br>Implements</div>
+                        </div>
+                        <div class="pipe-arrow">→</div>
+                        <div class="pipe-stage stage-output">
+                            <div class="pipe-icon-box">✓</div>
+                            <div class="pipe-stage-label">MC-0<br>Delivery</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <p>The benefits are immediate and quantifiable:</p>
@@ -569,17 +1048,17 @@
 
             <p>I anticipate objections. I would be disappointed if there were none.</p>
 
-            <p>Some will argue that what we do is exploitative -- that we are extracting the ideas from open source while leaving behind the people who contributed them. To this I say: yes, that is a reasonably accurate description of our business model. It is also a reasonably accurate description of every company that has ever used open source software without contributing back, which is to say, virtually every company that has ever used open source software. We are simply being honest about it, and charging a fee for the privilege.</p>
+            <p>Some will argue that what we do is exploitative, that we are extracting the ideas from open source while leaving behind the people who contributed them. To this I say: yes, that is a reasonably accurate description of our business model. It is also a reasonably accurate description of every company that has ever used open source software without contributing back, which is to say, virtually every company that has ever used open source software. We are simply being honest about it, and charging a fee for the privilege.</p>
 
-            <p>Others will argue that this is the "wrong" use of AI -- that language models should be building <em>new</em> things, not circumventing the legal protections of <em>existing</em> things. This is a touching sentiment, and I encourage those who hold it to continue building new things, ideally under the MalusCorp-0 License, which is available for download on our website.</p>
+            <p>Others will argue that this is the "wrong" use of AI, that language models should be building <em>new</em> things rather than circumventing the legal protections of <em>existing</em> things. This is a touching sentiment, and I encourage those who hold it to continue building new things, ideally under the MalusCorp-0 License, which is available for download on our website.</p>
 
-            <p>The most sophisticated objection, which I have heard at conferences and in private conversations with people who are much smarter than I am, goes something like this: copyright is the immune system of open source. Without copyright enforcement, the copyleft licenses that keep open source "open" are meaningless. If AI can trivially circumvent these protections, the entire incentive structure collapses. No one will contribute to projects that can be instantly replicated without attribution. The commons will wither.</p>
+            <p>The most sophisticated objection that I've heard is that the commons of open source software was this amazing grand experiment about allowing users to finally have control over the technology that impacts their life in such a meaningful way. This commons was protected by this system of digital IP and licensing. If AI can trivially circumvent these protections, the entire incentive structure collapses. No one will contribute to projects that can be instantly replicated without attribution. The commons will wither.</p>
 
             <p>This is, I concede, probably true.</p>
 
             <p>But I would gently point out that this argument assumes the commons was flourishing to begin with. It assumes maintainers were being fairly compensated, that community governance was working, that the social contract between producers and consumers of open source was being honored in good faith. The evidence suggests otherwise. Maintainers are burning out at record rates. Critical infrastructure depends on packages maintained by one person in their spare time. The social contract was already broken; we are merely providing a commercial alternative to pretending it wasn't.</p>
 
-            <p>The open source community built something extraordinary. They built it on idealism, on shared values, on the belief that cooperation could triumph over competition. These are admirable qualities. They are also, in the present economic climate, liabilities. The world has moved on. The machines have arrived. And the machines, I regret to inform you, do not have values.</p>
+            <p>The open source community built something extraordinary. They built it on idealism, on shared values, on the belief that cooperation could triumph over competition. These are admirable qualities that are unfortunately also completely useless against the material reality of today's economy. They are, for every company that relies upon them, liabilities. The world has moved on. The machines have arrived. And the machines, I regret to inform you, are built by profit seeking companies.</p>
 
             <div class="section-divider">· · ·</div>
 
@@ -589,7 +1068,7 @@
 
             <p>To the open source community: we built Malus because of you. Not in spite of you. Your ideas were, and remain, genuinely brilliant. We have simply found a way to separate the ideas from the inconvenience of having to deal with the people who had them. This is, if nothing else, efficient.</p>
 
-            <p>The future of software is not open. It is not closed. It is <em>liberated</em> -- freed from the constraints of licenses written for a world in which reproduction required effort, maintained by a generation of developers who believed that sharing code was its own reward and have been comprehensively proven right about the sharing and wrong about the reward.</p>
+            <p>The future of software is not open. It is not closed. It is <em>liberated</em>, freed from the constraints of licenses written for a world in which reproduction required effort, maintained by a generation of developers who believed that sharing code was its own reward and have been comprehensively proven right about the sharing and wrong about the reward.</p>
 
             <p>We owe them a debt we have no intention of repaying. But we do, at least, have the decency to say thank you.</p>
 
