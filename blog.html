@@ -141,6 +141,8 @@
             max-width: 680px;
             margin: 0 auto;
             padding: 3rem 2rem 4rem;
+            background: rgba(255, 255, 255, 0.92);
+            position: relative;
         }
 
         .blog-body p {
@@ -199,12 +201,160 @@
             font-style: italic;
         }
 
-        .blog-body .section-divider {
+        /* ═══ CANVAS NETWORK ═══ */
+        #networkCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.18;
+        }
+
+        /* ═══ PROGRESS BAR ═══ */
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent-red);
+            z-index: 201;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* ═══ CHAPTER NAV ═══ */
+        #chapterNav {
+            position: fixed;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .chapter-dot {
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--neutral-gray);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .chapter-dot:hover,
+        .chapter-dot.active {
+            background: var(--accent-red);
+            transform: scale(1.6);
+        }
+        .chapter-dot::after {
+            content: attr(data-title);
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.5rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .chapter-dot:hover::after {
+            opacity: 1;
+        }
+
+        /* ═══ SCROLL REVEAL ═══ */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══ THANK YOU SEQUENCE ═══ */
+        .thank-you-line {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .thank-you-line.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .thank-you-stop {
+            opacity: 0;
+            transform: scale(0.96);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .thank-you-stop.revealed {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ═══ SECTION BREAKS ═══ */
+        .section-break {
+            position: relative;
+            width: 100vw;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5rem 2rem;
+            margin: 3rem 0;
             text-align: center;
-            margin: 2.5rem 0;
-            color: var(--neutral-gray);
-            font-size: 1.2rem;
-            letter-spacing: 0.5em;
+            background: transparent;
+            min-height: 28vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .section-break.revealed {
+            opacity: 1;
+        }
+        .section-break-inner {
+            background: rgba(255, 255, 255, 0.78);
+            padding: 2rem 3rem;
+            border-radius: 4px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(232, 232, 232, 0.5);
+        }
+        .section-break-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: rgba(196, 30, 58, 0.18);
+            line-height: 1;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+        .section-break-rule {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+            margin: 0 auto 0.75rem;
+        }
+        .section-break-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         .blog-body ul, .blog-body ol {
@@ -229,6 +379,32 @@
             border-top: 2px solid var(--accent-red);
             border-bottom: 2px solid var(--accent-red);
             font-style: italic;
+            opacity: 0;
+            transform: scale(0.97);
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.6s ease;
+        }
+        .pullquote.spotlight {
+            opacity: 1;
+            transform: scale(1.02);
+            box-shadow: 0 0 60px rgba(196, 30, 58, 0.06);
+        }
+
+        /* ═══ WORD REVEAL ═══ */
+        .word-reveal .word-span {
+            opacity: 0;
+            transform: translateY(6px);
+            display: inline-block;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            margin-right: 0.25em;
+        }
+        .word-reveal .word-span.word-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .word-reveal.revealed .word-span {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .blog-cta {
@@ -403,6 +579,31 @@
             background: var(--bg-panel);
             border: 1px solid var(--border-dark);
         }
+        .cr-step {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .cr-step.cr-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .cr-arrow {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .cr-arrow.cr-visible {
+            opacity: 1;
+        }
+        .cr-duration {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .cr-duration.cr-visible {
+            opacity: 1;
+            transform: scale(1);
+        }
 
         .panel-new .cr-step .cr-icon {
             border-color: rgba(196, 30, 58, 0.25);
@@ -441,88 +642,119 @@
             margin-top: 0.15rem;
         }
 
-        /* Figure 3: Timeline */
-        .timeline-track {
+        /* ═══ VERTICAL TIMELINE ═══ */
+        .v-timeline {
             position: relative;
-            padding: 0.5rem 0 1rem;
+            margin: 2.5rem 0;
+            padding: 1rem 0;
         }
-
-        .timeline-line {
+        .v-tl-line {
             position: absolute;
-            top: 22px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--neutral-gray);
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--neutral-gray) 8%, var(--neutral-gray) 92%, transparent);
+            transform: translateX(-50%);
         }
-
-        .timeline-events {
+        .v-tl-event {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
+            padding-right: calc(50% + 2rem);
             position: relative;
-            z-index: 1;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        .timeline-event {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
+        .v-tl-event--right {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: calc(50% + 2rem);
+            transform: translateX(30px);
         }
-
-        .tl-dot {
-            width: 12px;
-            height: 12px;
+        .v-tl-event.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .v-tl-dot {
+            position: absolute;
+            left: 50%;
+            top: 1rem;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: var(--accent-red);
-            border: 2px solid var(--bg-panel);
+            border: 3px solid var(--bg-base);
             box-shadow: 0 0 0 2px var(--accent-red);
-            margin-bottom: 0.6rem;
+            transform: translateX(-50%);
+            z-index: 2;
+            transition: box-shadow 0.6s ease;
         }
-
-        .tl-year {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.65rem;
-            font-weight: 700;
+        .v-tl-event.revealed .v-tl-dot {
+            box-shadow: 0 0 0 2px var(--accent-red), 0 0 12px rgba(196, 30, 58, 0.3);
+        }
+        .v-tl-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--neutral-gray);
+            border-radius: 8px;
+            padding: 1.25rem 1.25rem 1rem;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        .v-tl-year {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: rgba(196, 30, 58, 0.06);
+            position: absolute;
+            top: -0.25rem;
+            right: 0.75rem;
+            line-height: 1;
+            pointer-events: none;
+        }
+        .v-tl-event--right .v-tl-year {
+            left: 0.75rem;
+            right: auto;
+        }
+        .v-tl-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.35rem;
+            position: relative;
         }
-
-        .tl-label {
+        .v-tl-card p {
+            font-size: 0.8rem !important;
+            line-height: 1.5 !important;
+            color: var(--text-secondary) !important;
+            margin-bottom: 0 !important;
+            position: relative;
+        }
+        .v-tl-tag {
+            display: inline-block;
             font-family: 'IBM Plex Mono', monospace;
             font-size: 0.45rem;
-            color: var(--text-muted);
+            padding: 0.15rem 0.4rem;
+            border-radius: 2px;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            text-align: center;
-            line-height: 1.4;
-            max-width: 80px;
-        }
-
-        .tl-tag {
-            margin-top: 0.35rem;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.4rem;
-            padding: 0.1rem 0.3rem;
-            border-radius: 1px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.08em;
             font-weight: 600;
+            margin-bottom: 0.5rem;
         }
-
-        .tl-tag.tag-vuln {
+        .v-tl-tag.tag-vuln {
             background: rgba(196, 30, 58, 0.08);
             color: var(--accent-red);
             border: 1px solid rgba(196, 30, 58, 0.2);
         }
-
-        .tl-tag.tag-sabotage {
+        .v-tl-tag.tag-sabotage {
             background: rgba(139, 111, 58, 0.08);
             color: var(--amber-primary);
             border: 1px solid rgba(139, 111, 58, 0.2);
         }
-
-        .tl-tag.tag-worm {
+        .v-tl-tag.tag-worm {
             background: rgba(26, 26, 26, 0.06);
             color: var(--text-secondary);
             border: 1px solid var(--border-dark);
@@ -564,11 +796,31 @@
             height: 100%;
             background: linear-gradient(90deg, rgba(196, 30, 58, 0.15), rgba(196, 30, 58, 0.3));
             border-right: 2px solid var(--accent-red);
+            width: 0;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .cost-bar-fill.fill-green {
             background: linear-gradient(90deg, rgba(74, 124, 74, 0.15), rgba(74, 124, 74, 0.3));
             border-right-color: var(--pass-primary);
+        }
+        .cost-row {
+            opacity: 0;
+            transform: translateX(-12px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .cost-row.cost-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .cost-total {
+            opacity: 0;
+            transform: scale(1.04);
+            transition: opacity 0.5s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .cost-total.cost-visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .cost-value {
@@ -604,6 +856,13 @@
             margin-top: 1rem;
             padding-top: 0.75rem;
             border-top: 1px dashed var(--border-dark);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .cost-vs.cost-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .cost-vs .vs-label {
@@ -645,6 +904,15 @@
             gap: 0.35rem;
             padding: 0.75rem 0.5rem;
             min-width: 80px;
+            opacity: 0.25;
+            filter: grayscale(1);
+            transform: scale(0.92);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .pipe-stage.pipe-active {
+            opacity: 1;
+            filter: grayscale(0);
+            transform: scale(1.06);
         }
 
         .pipe-icon-box {
@@ -694,6 +962,12 @@
         .pipe-arrow {
             color: var(--text-muted);
             font-size: 0.75rem;
+            opacity: 0.2;
+            transition: opacity 0.4s ease, color 0.4s ease;
+        }
+        .pipe-arrow.pipe-active {
+            opacity: 1;
+            color: var(--accent-red);
         }
 
         @media (max-width: 768px) {
@@ -704,40 +978,112 @@
                 grid-template-columns: 80px 1fr 50px;
             }
             .cost-label { font-size: 0.5rem; }
-            .timeline-events { gap: 0.25rem; }
-            .tl-label { font-size: 0.4rem; max-width: 60px; }
             .pipeline-flow { gap: 0.15rem; }
             .pipe-stage { min-width: 60px; padding: 0.5rem 0.25rem; }
             .pipe-icon-box { width: 32px; height: 32px; font-size: 0.8rem; }
-        }
 
-        @media (max-width: 768px) {
+            #chapterNav { display: none; }
+            #networkCanvas { display: none; }
+
+            .v-tl-event {
+                padding-right: 0;
+                padding-left: 2.5rem;
+                justify-content: flex-start;
+                transform: translateY(20px);
+            }
+            .v-tl-event--right {
+                padding-left: 2.5rem;
+                transform: translateY(20px);
+            }
+            .v-tl-event.revealed {
+                transform: translateY(0);
+            }
+            .v-tl-line {
+                left: 8px;
+                transform: none;
+            }
+            .v-tl-dot {
+                left: 8px;
+                transform: translateX(-50%);
+            }
+            .v-tl-card {
+                max-width: none;
+            }
+
+            .section-break {
+                padding: 2.5rem 1.5rem;
+                min-height: auto;
+            }
+            .section-break-number {
+                font-size: 2rem;
+            }
+            .section-break-inner {
+                padding: 1.5rem 2rem;
+            }
+
             .blog-hero {
                 padding: 3rem 1.5rem 2rem;
             }
-
             .blog-body {
                 padding: 2rem 1.5rem 3rem;
+                background: none;
             }
-
             .blog-meta {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.75rem;
             }
-
             .blog-body h2 {
                 font-size: 1.3rem;
             }
-
             .pullquote {
                 font-size: 1.15rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-reveal,
+            .thank-you-line,
+            .thank-you-stop,
+            .section-break,
+            .v-tl-event,
+            .cr-step,
+            .cr-arrow,
+            .cr-duration,
+            .cost-row,
+            .cost-total,
+            .cost-vs,
+            .pipe-stage,
+            .pipe-arrow,
+            .pullquote,
+            .word-reveal .word-span {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+                transition: none !important;
+            }
+            .cost-bar-fill {
+                transition: none !important;
+            }
+            #networkCanvas {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
     <div class="bg-texture"></div>
+    <canvas id="networkCanvas"></canvas>
+    <div id="progressBar"></div>
+    <nav id="chapterNav">
+        <a class="chapter-dot" href="#section-opening" data-title="Opening"></a>
+        <a class="chapter-dot" href="#section-legal" data-title="The Legal Crack"></a>
+        <a class="chapter-dot" href="#section-structural" data-title="Structural Case"></a>
+        <a class="chapter-dot" href="#section-compliance" data-title="Compliance"></a>
+        <a class="chapter-dot" href="#section-malus" data-title="What Malus Does"></a>
+        <a class="chapter-dot" href="#section-ethics" data-title="Ethics"></a>
+        <a class="chapter-dot" href="#section-closing" data-title="Closing"></a>
+    </nav>
 
     <nav class="navbar">
         <div class="nav-container">
@@ -782,18 +1128,19 @@
         </div>
 
         <div class="blog-body">
+            <div id="section-opening"></div>
 
             <p>Dear Valued Customer,</p>
 
             <p>I want to begin with something that is long overdue in our industry: genuine, heartfelt gratitude toward the open source software community.</p>
 
-            <p>Thank you.</p>
+            <p class="thank-you-line">Thank you.</p>
 
-            <p>Thank you for the thousands of unpaid hours. Thank you for answering GitHub issues at two in the morning from strangers who have never once considered that you might have a family, or a deadline of your own, or a deteriorating relationship partly attributable to answering GitHub issues at two in the morning. Thank you for writing the code that Fortune 500 companies have used to generate trillions of dollars in cumulative revenue, and for being so remarkably gracious about the fact that your compensation for this work has been, historically, a mass of mass.</p>
+            <p class="thank-you-line">Thank you for the thousands of unpaid hours. Thank you for answering GitHub issues at two in the morning from strangers who have never once considered that you might have a family, or a deadline of your own, or a deteriorating relationship partly attributable to answering GitHub issues at two in the morning. Thank you for writing the code that Fortune 500 companies have used to generate trillions of dollars in cumulative revenue, and for being so remarkably gracious about the fact that your compensation for this work has been, historically, a mass of mass.</p>
 
-            <p>Thank you, sincerely, for your service.</p>
+            <p class="thank-you-line">Thank you, sincerely, for your service.</p>
 
-            <p>Now: it is time for you to stop.</p>
+            <p class="thank-you-stop">Now: it is time for you to stop.</p>
 
             <p>Not because you have done anything wrong. You have done everything right. You have been so generous, so unreasonably, almost <em>suspiciously</em> generous, that you have made it possible for an entire global economy to run on software that nobody technically owns, maintained by people that nobody technically employs, governed by licenses that nobody technically reads. It is a miracle of human cooperation. It is also, from a fiduciary standpoint, completely insane.</p>
 
@@ -818,9 +1165,7 @@
                 </div>
             </div>
 
-            <div class="section-divider">· · ·</div>
-
-            <h2>The Legal Crack in the Foundation</h2>
+            <h2 id="section-legal">The Legal Crack in the Foundation</h2>
 
             <p>A very brief bit of background, because it matters for what comes next.</p>
 
@@ -830,7 +1175,7 @@
 
             <p>In the 1980s, Phoenix Technologies used this exact technique to clone the IBM BIOS. One engineer studied every documented and undocumented behavior of the original. A second engineer, who had never seen IBM's code, built a compatible BIOS from the spec alone. It took months. It worked. It is a meaningful part of why you can buy any motherboard today and have it run any operating system.</p>
 
-            <div class="blog-diagram">
+            <div class="blog-diagram" id="cleanroomDiagram">
                 <div class="diagram-header">Fig. 2 · Cleanroom Engineering: Then and Now</div>
                 <div class="diagram-content">
                     <div class="cleanroom-compare">
@@ -868,9 +1213,7 @@
 
             <p>The legal principle is ancient. The technology is new. And for companies that depend on open source software, this combination changes everything. Copyright was the immune system that made open source licenses enforceable. Our machines walk straight through it.</p>
 
-            <div class="section-divider">· · ·</div>
-
-            <h2>The Structural Case Against Depending on Strangers</h2>
+            <h2 id="section-structural">The Structural Case Against Depending on Strangers</h2>
 
             <p>The appeal of open source has always been that it is free, that it is transparent, and that it is maintained by a global community of passionate developers. All three of these claims are true. All three are also the source of the problem.</p>
 
@@ -878,43 +1221,51 @@
 
             <p>The risk is not theoretical. Open source supply chains fail in two distinct and equally alarming ways: they break by accident, and they break on purpose.</p>
 
-            <div class="blog-diagram">
-                <div class="diagram-header">Fig. 3 · Open Source Supply Chain Incidents · 2016 to Present</div>
-                <div class="diagram-content">
-                    <div class="timeline-track">
-                        <div class="timeline-line"></div>
-                        <div class="timeline-events">
-                            <div class="timeline-event">
-                                <div class="tl-dot"></div>
-                                <div class="tl-year">2016</div>
-                                <div class="tl-label">left-pad deleted from npm</div>
-                                <div class="tl-tag tag-sabotage">Sabotage</div>
-                            </div>
-                            <div class="timeline-event">
-                                <div class="tl-dot"></div>
-                                <div class="tl-year">2021</div>
-                                <div class="tl-label">Log4Shell CVE-2021-44228</div>
-                                <div class="tl-tag tag-vuln">Critical CVE</div>
-                            </div>
-                            <div class="timeline-event">
-                                <div class="tl-dot"></div>
-                                <div class="tl-year">2022</div>
-                                <div class="tl-label">colors.js & faker.js sabotaged</div>
-                                <div class="tl-tag tag-sabotage">Sabotage</div>
-                            </div>
-                            <div class="timeline-event">
-                                <div class="tl-dot"></div>
-                                <div class="tl-year">2022</div>
-                                <div class="tl-label">node-ipc geopolitical payload</div>
-                                <div class="tl-tag tag-sabotage">Sabotage</div>
-                            </div>
-                            <div class="timeline-event">
-                                <div class="tl-dot"></div>
-                                <div class="tl-year">2025</div>
-                                <div class="tl-label">Shai Hulud 2.0 npm worm</div>
-                                <div class="tl-tag tag-worm">Worm</div>
-                            </div>
-                        </div>
+            <div class="v-timeline" id="incidentTimeline">
+                <div class="v-tl-line"></div>
+                <div class="v-tl-event">
+                    <div class="v-tl-dot"></div>
+                    <div class="v-tl-card">
+                        <div class="v-tl-year">2016</div>
+                        <div class="v-tl-tag tag-sabotage">Sabotage</div>
+                        <h4>left-pad deleted from npm</h4>
+                        <p>One developer, 11 lines of code, thousands of broken builds worldwide.</p>
+                    </div>
+                </div>
+                <div class="v-tl-event v-tl-event--right">
+                    <div class="v-tl-dot"></div>
+                    <div class="v-tl-card">
+                        <div class="v-tl-year">2021</div>
+                        <div class="v-tl-tag tag-vuln">Critical CVE</div>
+                        <h4>Log4Shell CVE-2021-44228</h4>
+                        <p>Remote code execution via a logging library. Merry Christmas.</p>
+                    </div>
+                </div>
+                <div class="v-tl-event">
+                    <div class="v-tl-dot"></div>
+                    <div class="v-tl-card">
+                        <div class="v-tl-year">2022</div>
+                        <div class="v-tl-tag tag-sabotage">Sabotage</div>
+                        <h4>colors.js &amp; faker.js sabotaged</h4>
+                        <p>Maintainer protests corporate exploitation by breaking his own packages.</p>
+                    </div>
+                </div>
+                <div class="v-tl-event v-tl-event--right">
+                    <div class="v-tl-dot"></div>
+                    <div class="v-tl-card">
+                        <div class="v-tl-year">2022</div>
+                        <div class="v-tl-tag tag-sabotage">Sabotage</div>
+                        <h4>node-ipc geopolitical payload</h4>
+                        <p>A package conducts its own foreign policy via file-wiping payloads.</p>
+                    </div>
+                </div>
+                <div class="v-tl-event">
+                    <div class="v-tl-dot"></div>
+                    <div class="v-tl-card">
+                        <div class="v-tl-year">2025</div>
+                        <div class="v-tl-tag tag-worm">Worm</div>
+                        <h4>Shai Hulud 2.0 npm worm</h4>
+                        <p>A weak password, a dependency graph, and remote code execution on thousands of systems.</p>
                     </div>
                 </div>
             </div>
@@ -929,9 +1280,7 @@
 
             <p>The community's preferred solution to these problems is, reliably, more community: more funding, more appreciation, more corporate participation, more conferences where people in lanyards discuss the importance of "giving back." This is understandable. It is also, from the perspective of a Fortune 500 risk officer, absolutely nonsensical. You invest more money, and still have no control. Blindly trusting stranges has never been a wise business strategy.</p>
 
-            <div class="section-divider">· · ·</div>
-
-            <h2>The Expensive Theater of Open Source Compliance</h2>
+            <h2 id="section-compliance">The Expensive Theater of Open Source Compliance</h2>
 
             <p>Companies have developed an elaborate apparatus to manage these risks. They spend millions on software composition analysis tools like Snyk and Black Duck. They establish Open Source Program Offices, entire departments dedicated to justifying, to skeptical leadership, why the company should continue depending on code written by people who have explicitly refused to be depended upon.</p>
 
@@ -943,38 +1292,38 @@
 
             <p class="pullquote">You are funding an elaborate system of risk management around code that was supposed to be free.</p>
 
-            <div class="blog-diagram">
+            <div class="blog-diagram" id="costDiagram">
                 <div class="diagram-header">Fig. 4 · The Annual Cost of "Free" · Avg. Enterprise (500+ Engineers)</div>
                 <div class="diagram-content">
                     <div class="cost-bars">
                         <div class="cost-row">
                             <div class="cost-label">SCA Tooling</div>
-                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 85%"></div></div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" data-width="85"></div></div>
                             <div class="cost-value">$1.2M</div>
                         </div>
                         <div class="cost-row">
                             <div class="cost-label">OSPO Team</div>
-                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 60%"></div></div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" data-width="60"></div></div>
                             <div class="cost-value">$850K</div>
                         </div>
                         <div class="cost-row">
                             <div class="cost-label">Legal Review</div>
-                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 50%"></div></div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" data-width="50"></div></div>
                             <div class="cost-value">$700K</div>
                         </div>
                         <div class="cost-row">
                             <div class="cost-label">Incident Resp.</div>
-                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 70%"></div></div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" data-width="70"></div></div>
                             <div class="cost-value">$980K</div>
                         </div>
                         <div class="cost-row">
                             <div class="cost-label">CLA Admin</div>
-                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 20%"></div></div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" data-width="20"></div></div>
                             <div class="cost-value">$270K</div>
                         </div>
                         <div class="cost-total">
                             <div class="cost-label">Total</div>
-                            <div class="cost-bar-track"><div class="cost-bar-fill" style="width: 100%"></div></div>
+                            <div class="cost-bar-track"><div class="cost-bar-fill" data-width="100"></div></div>
                             <div class="cost-value">$4.0M</div>
                         </div>
                     </div>
@@ -986,17 +1335,15 @@
                 </div>
             </div>
 
-            <div class="section-divider">· · ·</div>
-
-            <h2>What Malus Does, and Why It Matters</h2>
+            <h2 id="section-malus">What Malus Does, and Why It Matters</h2>
 
             <p>Malus is a cleanroom-as-a-service platform. You upload your dependency manifest (<code>package.json</code>, <code>requirements.txt</code>, <code>Cargo.toml</code>, whatever you use) and our AI systems independently recreate every package in your software bill of materials from scratch.</p>
 
             <p>Our process is deliberately, provably, almost tediously legal. One set of AI agents analyzes only public documentation: README files, API specifications, type definitions. They produce a detailed specification that contains no code. A completely separate set of AI agents, which have never communicated with the first set, never seen the original source, never so much as glanced at a Git repository, implements the specification from scratch. The resulting code is yours. It arrives under the MalusCorp-0 License: zero attribution requirements, zero copyleft, zero obligations.</p>
 
-            <p>This is the same process Dave used at Phoenix Technologies in the 1980s, and the same legal theory the Supreme Court validated in 1879. We have merely applied modern technology to a nineteenth-century doctrine, which is, if you think about it, the most American thing imaginable.</p>
+            <p>This is the same process used at <a href="https://en.wikipedia.org/wiki/Phoenix_Technologies#Cloning_the_IBM_PC_BIOS">Phoenix Technologies in the 1980s</a>, and the same legal theory the Supreme Court validated in 1879. We have merely applied modern technology to a nineteenth-century doctrine.</p>
 
-            <div class="blog-diagram">
+            <div class="blog-diagram" id="pipelineDiagram">
                 <div class="diagram-header">Fig. 5 · The Malus Liberation Pipeline · Rev 3.1</div>
                 <div class="diagram-content">
                     <div class="pipeline-flow">
@@ -1042,9 +1389,11 @@
                 <li><strong>100% CVE-free at time of delivery.</strong> Freshly generated code, untouched by human hands or known vulnerability databases. Your compliance dashboard goes from red to green overnight.</li>
             </ul>
 
-            <div class="section-divider">· · ·</div>
+            <p><strong>This is just the beginning.</strong> Compliance is expensive enough and if you can eliminate millions of dollars of annual costs, why not? However, using Malus, we will be able to deliver higher quality code, faster, and with less risk. In the future we will provide comprehensive end to end testing of MalusCorp-0 Licensed code. We will provide automated security audits and remediation. We will provide comprehensive performance testing and remediation.</p>
 
-            <h2>A Note on Ethics, for Those Who Insist</h2>
+            <p>We will do everything the open source community does, and we will do it better, more efficiently, and with less risk to you, the customer.</p>
+
+            <h2 id="section-ethics">A Note on Ethics, for Those Who Insist</h2>
 
             <p>I anticipate objections. I would be disappointed if there were none.</p>
 
@@ -1060,9 +1409,7 @@
 
             <p>The open source community built something extraordinary. They built it on idealism, on shared values, on the belief that cooperation could triumph over competition. These are admirable qualities that are unfortunately also completely useless against the material reality of today's economy. They are, for every company that relies upon them, liabilities. The world has moved on. The machines have arrived. And the machines, I regret to inform you, are built by profit seeking companies.</p>
 
-            <div class="section-divider">· · ·</div>
-
-            <h2>A Closing Address</h2>
+            <h2 id="section-closing">A Closing Address</h2>
 
             <p>To our customers: we built Malus for you. We built it because you deserve software infrastructure that comes with a contract instead of a prayer, a support number instead of a GitHub issue, and a license that says "do whatever you want" instead of "do whatever you want, but also here are forty-seven conditions."</p>
 
@@ -1072,7 +1419,7 @@
 
             <p>We owe them a debt we have no intention of repaying. But we do, at least, have the decency to say thank you.</p>
 
-            <p>So: thank you. Truly. We'll take it from here.</p>
+            <p class="word-reveal" id="closingReveal">So: thank you. Truly. We'll take it from here.</p>
 
             <p style="margin-top: 2.5rem; margin-bottom: 0.25rem;"><strong>Mike Nolan</strong></p>
             <p style="margin-top: 0; color: var(--text-muted); font-size: 0.9rem;">Chief Executive Officer<br>MalusCorp International Holdings Ltd.<br>Registered in [JURISDICTION WITHHELD]</p>
@@ -1142,5 +1489,675 @@
             </div>
         </div>
     </footer>
+
+    <script>
+    (function() {
+        'use strict';
+
+        var REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var scrollProgress = 0;
+        var ticking = false;
+
+        // ═══ CANVAS NETWORK ═══
+
+        var canvas = document.getElementById('networkCanvas');
+        var ctx = canvas ? canvas.getContext('2d') : null;
+        var netNodes = [];
+        var netEdges = [];
+        var canvasActive = false;
+
+        var NODE_DATA = [
+            {name:'linux',r:20},{name:'react',r:17},{name:'node.js',r:17},
+            {name:'python',r:17},{name:'lodash',r:12},{name:'express',r:14},
+            {name:'webpack',r:12},{name:'babel',r:11},{name:'typescript',r:14},
+            {name:'eslint',r:11},{name:'vue',r:14},{name:'angular',r:12},
+            {name:'django',r:12},{name:'flask',r:11},{name:'numpy',r:12},
+            {name:'pandas',r:12},{name:'requests',r:11},{name:'jquery',r:11},
+            {name:'moment',r:9},{name:'axios',r:9},{name:'redis',r:11},
+            {name:'postgres',r:12},{name:'nginx',r:12},{name:'openssl',r:14},
+            {name:'curl',r:9},{name:'git',r:15},{name:'docker',r:14},
+            {name:'kubernetes',r:12},{name:'rust',r:11},{name:'gcc',r:11},
+            {name:'left-pad',r:8,dieAt:0.33},
+            {name:'log4j',r:12,dangerAt:0.37},
+            {name:'colors.js',r:8,dieAt:0.42},
+            {name:'faker.js',r:8,dieAt:0.43},
+            {name:'node-ipc',r:9,dangerAt:0.47}
+        ];
+
+        function seededRand(seed) {
+            var x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+            return x - Math.floor(x);
+        }
+
+        function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function initNetwork() {
+            netNodes = [];
+            netEdges = [];
+            var n = NODE_DATA.length;
+            var golden = Math.PI * (3 - Math.sqrt(5));
+
+            for (var i = 0; i < n; i++) {
+                var d = NODE_DATA[i];
+                var angle = i * golden;
+                var dist = 0.06 + 0.38 * Math.sqrt(i / n);
+                var gx = 0.5 + dist * Math.cos(angle) + (seededRand(i) - 0.5) * 0.14;
+                var gy = 0.5 + dist * Math.sin(angle) + (seededRand(i + 50) - 0.5) * 0.14;
+                gx = Math.max(0.05, Math.min(0.95, gx));
+                gy = Math.max(0.05, Math.min(0.95, gy));
+
+                netNodes.push({
+                    name: d.name, gx: gx, gy: gy,
+                    radius: d.r,
+                    hue: 140 + seededRand(i + 200) * 90,
+                    phase: seededRand(i + 300) * Math.PI * 2,
+                    speed: 0.15 + seededRand(i + 400) * 0.25,
+                    birthOrder: i,
+                    dieAt: d.dieAt || null,
+                    dangerAt: d.dangerAt || null,
+                    deathProgress: 0,
+                    inDanger: false,
+                    converted: false,
+                    visible: 0
+                });
+            }
+
+            for (var a = 0; a < n; a++) {
+                for (var b = a + 1; b < n; b++) {
+                    var dx = netNodes[a].gx - netNodes[b].gx;
+                    var dy = netNodes[a].gy - netNodes[b].gy;
+                    if (Math.sqrt(dx * dx + dy * dy) < 0.26) {
+                        netEdges.push({ from: a, to: b });
+                    }
+                }
+            }
+        }
+
+        function drawHex(cx, cy, r) {
+            ctx.beginPath();
+            for (var k = 0; k < 6; k++) {
+                var a = (Math.PI / 3) * k - Math.PI / 6;
+                var px = cx + r * Math.cos(a);
+                var py = cy + r * Math.sin(a);
+                if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+        }
+
+        function drawNetwork() {
+            if (!ctx || !canvasActive) return;
+            var w = canvas.width;
+            var h = canvas.height;
+            var t = Date.now() / 1000;
+            var p = scrollProgress;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Scroll-driven narrative phases
+            var birthPhase = clamp(p / 0.12, 0, 1);
+            var shieldAppear = clamp((p - 0.16) / 0.08, 0, 1);
+            var shieldCrack = clamp((p - 0.44) / 0.16, 0, 1);
+            var complianceBurden = clamp((p - 0.52) / 0.1, 0, 1);
+            var scanProgress = clamp((p - 0.65) / 0.17, 0, 1);
+            var fullCorporate = clamp((p - 0.84) / 0.1, 0, 1);
+
+            // Update each node's state
+            for (var ni = 0; ni < netNodes.length; ni++) {
+                var nd = netNodes[ni];
+                var birthT = nd.birthOrder / netNodes.length;
+                nd.visible = clamp((birthPhase - birthT) * netNodes.length * 0.25, 0, 1);
+                if (nd.dieAt) nd.deathProgress = clamp((p - nd.dieAt) / 0.025, 0, 1);
+                nd.inDanger = nd.dangerAt != null && p >= nd.dangerAt && p < nd.dangerAt + 0.12;
+                nd.converted = scanProgress > 0 && nd.gx < (scanProgress * 1.1 - 0.05);
+            }
+
+            // ── Draw edges ──
+            for (var ei = 0; ei < netEdges.length; ei++) {
+                var edge = netEdges[ei];
+                var nf = netNodes[edge.from];
+                var nt = netNodes[edge.to];
+                var eVis = Math.min(nf.visible, nt.visible);
+                if (eVis <= 0) continue;
+
+                var deathFade = 1;
+                if (nf.deathProgress > 0) deathFade *= (1 - nf.deathProgress);
+                if (nt.deathProgress > 0) deathFade *= (1 - nt.deathProgress);
+                if (deathFade < 0.01) continue;
+
+                var dim = 1 - complianceBurden * 0.4;
+                var fx = nf.gx * w + Math.sin(t * nf.speed + nf.phase) * 6;
+                var fy = nf.gy * h + Math.cos(t * nf.speed * 0.7 + nf.phase) * 6;
+                var tx = nt.gx * w + Math.sin(t * nt.speed + nt.phase) * 6;
+                var ty = nt.gy * h + Math.cos(t * nt.speed * 0.7 + nt.phase) * 6;
+
+                if (nf.converted && nt.converted) {
+                    var gridFactor = clamp((fullCorporate - 0.2) / 0.6, 0, 1);
+                    fx = fx * (1 - gridFactor) + (nf.gx * w) * gridFactor;
+                    fy = fy * (1 - gridFactor) + (nf.gy * h) * gridFactor;
+                    tx = tx * (1 - gridFactor) + (nt.gx * w) * gridFactor;
+                    ty = ty * (1 - gridFactor) + (nt.gy * h) * gridFactor;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(fx, fy);
+                ctx.lineTo(tx, ty);
+                var eAlpha = 0.35 * eVis * deathFade * dim;
+
+                if (nf.converted && nt.converted) {
+                    ctx.strokeStyle = 'rgba(196, 30, 58,' + (eAlpha * 0.5) + ')';
+                    ctx.lineWidth = 0.8 + fullCorporate * 0.7;
+                } else {
+                    ctx.strokeStyle = 'rgba(100, 170, 120,' + eAlpha + ')';
+                    ctx.lineWidth = 1;
+                }
+                ctx.stroke();
+            }
+
+            // ── Draw shield (copyright protection boundary) ──
+            if (shieldAppear > 0 && shieldCrack < 1) {
+                var shAlpha = shieldAppear * (1 - shieldCrack) * 0.2;
+                var sides = 8;
+                ctx.beginPath();
+                for (var si = 0; si <= sides; si++) {
+                    var sa = (si / sides) * Math.PI * 2 - Math.PI / 2;
+                    var srx = w * 0.4;
+                    var sry = h * 0.4;
+                    var sx = w * 0.5 + srx * Math.cos(sa);
+                    var sy = h * 0.5 + sry * Math.sin(sa);
+                    if (si === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+                }
+                ctx.strokeStyle = 'rgba(70, 140, 90,' + shAlpha + ')';
+                ctx.lineWidth = 2.5;
+                if (shieldCrack > 0) {
+                    ctx.setLineDash([12, 4 + shieldCrack * 30]);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                if (shieldCrack < 0.3) {
+                    ctx.font = '10px "IBM Plex Mono", monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = 'rgba(70, 140, 90,' + (shAlpha * 0.6) + ')';
+                    var licenses = ['MIT', 'GPL', 'Apache', 'BSD', 'MPL'];
+                    for (var li = 0; li < licenses.length; li++) {
+                        var la = (li / licenses.length) * Math.PI * 2 - Math.PI / 2;
+                        var lx = w * 0.5 + w * 0.43 * Math.cos(la);
+                        var ly = h * 0.5 + h * 0.43 * Math.sin(la);
+                        ctx.fillText(licenses[li], lx, ly);
+                    }
+                }
+            }
+
+            // ── Draw Malus scan line ──
+            if (scanProgress > 0 && scanProgress < 1) {
+                var scanX = scanProgress * w * 1.1 - w * 0.05;
+                ctx.beginPath();
+                ctx.moveTo(scanX, 0);
+                ctx.lineTo(scanX, h);
+                ctx.strokeStyle = 'rgba(196, 30, 58, 0.5)';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+
+                var scanGrad = ctx.createLinearGradient(scanX - 50, 0, scanX + 8, 0);
+                scanGrad.addColorStop(0, 'rgba(196, 30, 58, 0)');
+                scanGrad.addColorStop(0.6, 'rgba(196, 30, 58, 0.06)');
+                scanGrad.addColorStop(1, 'rgba(196, 30, 58, 0)');
+                ctx.fillStyle = scanGrad;
+                ctx.fillRect(scanX - 50, 0, 58, h);
+            }
+
+            // ── Draw nodes ──
+            for (var ni2 = 0; ni2 < netNodes.length; ni2++) {
+                var node = netNodes[ni2];
+                if (node.visible <= 0) continue;
+
+                var nx = node.gx * w + Math.sin(t * node.speed + node.phase) * 6;
+                var ny = node.gy * h + Math.cos(t * node.speed * 0.7 + node.phase) * 6;
+                var nr = node.radius;
+
+                if (node.converted) {
+                    var gridF = clamp((fullCorporate - 0.2) / 0.6, 0, 1);
+                    nx = nx * (1 - gridF) + (node.gx * w) * gridF;
+                    ny = ny * (1 - gridF) + (node.gy * h) * gridF;
+                }
+
+                // Death animation: expand then vanish with explosion ring
+                if (node.deathProgress > 0) {
+                    var dp = node.deathProgress;
+                    if (dp < 0.3) {
+                        nr *= 1 + dp * 4;
+                    } else {
+                        nr *= Math.max(0, 1 - (dp - 0.3) / 0.7);
+                    }
+                    if (dp < 0.85) {
+                        var ringR = node.radius * (1 + dp * 10);
+                        var ringAlpha = (1 - dp) * 0.5 * node.visible;
+                        ctx.beginPath();
+                        ctx.arc(nx, ny, ringR, 0, Math.PI * 2);
+                        ctx.strokeStyle = 'rgba(196, 30, 58,' + ringAlpha + ')';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                    if (dp >= 1) continue;
+                }
+
+                // Danger nodes pulse red
+                if (node.inDanger) {
+                    nr *= 1 + Math.sin(t * 5) * 0.2;
+                }
+
+                // Node color
+                var nodeColor;
+                if (node.converted) {
+                    if (fullCorporate > 0.5) {
+                        nodeColor = 'rgba(35, 35, 35,' + (node.visible * 0.75) + ')';
+                    } else {
+                        nodeColor = 'rgba(196, 30, 58,' + (node.visible * 0.65) + ')';
+                    }
+                } else if (node.inDanger) {
+                    var dPulse = 0.5 + 0.5 * Math.sin(t * 5);
+                    nodeColor = 'rgba(196,' + Math.round(20 + dPulse * 60) + ',58,' + (node.visible * 0.7) + ')';
+                } else if (node.deathProgress > 0) {
+                    nodeColor = 'rgba(196, 30, 58,' + (node.visible * (1 - node.deathProgress) * 0.7) + ')';
+                } else {
+                    var sat = 55 - complianceBurden * 20;
+                    var lit = 48 - complianceBurden * 10;
+                    nodeColor = 'hsla(' + node.hue + ',' + sat + '%,' + lit + '%,' + (node.visible * 0.6) + ')';
+                }
+
+                // Shape: circle for healthy, hexagon for converted
+                ctx.beginPath();
+                if (node.converted) {
+                    drawHex(nx, ny, nr);
+                } else {
+                    ctx.arc(nx, ny, nr, 0, Math.PI * 2);
+                }
+                ctx.fillStyle = nodeColor;
+                ctx.fill();
+
+                // Labels
+                if (node.visible > 0.5 && nr > 2) {
+                    var lAlpha = (node.visible - 0.5) * 2;
+                    var lText = node.converted ? 'MC-' + (ni2 < 10 ? '0' : '') + ni2 : node.name;
+                    ctx.font = (node.radius > 12 ? '12px' : '10px') + ' "IBM Plex Mono", monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    if (node.converted) {
+                        ctx.fillStyle = 'rgba(196, 30, 58,' + (lAlpha * 0.55) + ')';
+                    } else if (node.inDanger) {
+                        ctx.fillStyle = 'rgba(196, 30, 58,' + (lAlpha * 0.6) + ')';
+                    } else {
+                        ctx.fillStyle = 'rgba(50, 50, 50,' + (lAlpha * 0.5) + ')';
+                    }
+                    ctx.fillText(lText, nx, ny + nr + 5);
+                }
+            }
+
+            // ── Compliance dollar signs floating ──
+            if (complianceBurden > 0 && scanProgress < 0.5) {
+                ctx.font = '12px "IBM Plex Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                var numDollars = Math.round(8 + complianceBurden * 10);
+                for (var di = 0; di < numDollars; di++) {
+                    var dollarX = seededRand(di * 7) * 0.8 * w + 0.1 * w;
+                    var dollarBaseY = seededRand(di * 7 + 3) * 0.8 * h + 0.1 * h;
+                    var dollarY = dollarBaseY + Math.sin(t * 0.4 + di * 1.3) * 18;
+                    var dollarAlpha = complianceBurden * 0.22 * (1 - scanProgress * 2);
+                    ctx.fillStyle = 'rgba(140, 110, 50,' + Math.max(0, dollarAlpha) + ')';
+                    ctx.fillText('$', dollarX, dollarY);
+                }
+            }
+
+            // ── Phase label in top-left corner ──
+            var phaseLabel = '';
+            var phaseLabelColor = '100, 100, 100';
+            var phaseLabelAlpha = 0;
+            if (p < 0.05) {
+                phaseLabel = ''; phaseLabelAlpha = 0;
+            } else if (p < 0.16) {
+                phaseLabel = 'THE COMMONS'; phaseLabelAlpha = clamp((p - 0.05) / 0.03, 0, 0.6);
+                phaseLabelColor = '70, 140, 90';
+            } else if (p < 0.30) {
+                phaseLabel = 'COPYRIGHT PROTECTION'; phaseLabelAlpha = clamp(shieldAppear * 0.6, 0, 0.6);
+                phaseLabelColor = '70, 140, 90';
+            } else if (p < 0.52) {
+                phaseLabel = 'SUPPLY CHAIN INCIDENTS'; phaseLabelAlpha = 0.6;
+                phaseLabelColor = '196, 30, 58';
+            } else if (p < 0.65) {
+                phaseLabel = 'COMPLIANCE THEATER'; phaseLabelAlpha = clamp(complianceBurden * 0.6, 0, 0.6);
+                phaseLabelColor = '140, 110, 50';
+            } else if (p < 0.84) {
+                phaseLabel = 'MALUS LIBERATION'; phaseLabelAlpha = 0.7;
+                phaseLabelColor = '196, 30, 58';
+            } else {
+                phaseLabel = 'TOTAL CONVERSION'; phaseLabelAlpha = clamp(fullCorporate * 0.7, 0, 0.7);
+                phaseLabelColor = '40, 40, 40';
+            }
+            if (phaseLabel && phaseLabelAlpha > 0.01) {
+                ctx.font = '600 14px "IBM Plex Mono", monospace';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.letterSpacing = '3px';
+                ctx.fillStyle = 'rgba(' + phaseLabelColor + ',' + phaseLabelAlpha + ')';
+                ctx.fillText(phaseLabel, 24, 90);
+                ctx.letterSpacing = '0px';
+            }
+
+            requestAnimationFrame(drawNetwork);
+        }
+
+        // ═══ SCROLL TRACKING ═══
+
+        function onScroll() {
+            if (!ticking) {
+                requestAnimationFrame(updateScroll);
+                ticking = true;
+            }
+        }
+
+        function updateScroll() {
+            ticking = false;
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            scrollProgress = docHeight > 0 ? Math.max(0, Math.min(1, scrollTop / docHeight)) : 0;
+
+            var bar = document.getElementById('progressBar');
+            if (bar) bar.style.width = (scrollProgress * 100) + '%';
+
+            updateChapterNav();
+        }
+
+        // ═══ CHAPTER NAV ═══
+
+        var sectionIds = [
+            'section-opening', 'section-legal', 'section-structural',
+            'section-compliance', 'section-malus', 'section-ethics', 'section-closing'
+        ];
+        var chapterDots = [];
+
+        function updateChapterNav() {
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var winH = window.innerHeight;
+            var activeIdx = 0;
+            for (var i = 0; i < sectionIds.length; i++) {
+                var el = document.getElementById(sectionIds[i]);
+                if (el) {
+                    var rect = el.getBoundingClientRect();
+                    if (rect.top < winH * 0.4) activeIdx = i;
+                }
+            }
+            for (var j = 0; j < chapterDots.length; j++) {
+                if (j === activeIdx) chapterDots[j].classList.add('active');
+                else chapterDots[j].classList.remove('active');
+            }
+        }
+
+        // ═══ REVEAL OBSERVER ═══
+
+        var revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting) return;
+                var el = entry.target;
+                if (REDUCED_MOTION) {
+                    el.classList.add('revealed');
+                    revealObserver.unobserve(el);
+                    return;
+                }
+                el.classList.add('revealed');
+                revealObserver.unobserve(el);
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+        var thankYouIdx = 0;
+        var thankYouObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting) return;
+                var el = entry.target;
+                var delay = REDUCED_MOTION ? 0 : (thankYouIdx * 300);
+                thankYouIdx++;
+                setTimeout(function() { el.classList.add('revealed'); }, delay);
+                thankYouObserver.unobserve(el);
+            });
+        }, { threshold: 0.2, rootMargin: '0px 0px -20px 0px' });
+
+        var spotlightObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) entry.target.classList.add('spotlight');
+                else entry.target.classList.remove('spotlight');
+            });
+        }, { threshold: 0.5 });
+
+        // ═══ CLEANROOM ANIMATION ═══
+
+        var cleanroomAnimated = false;
+        var cleanroomObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting || cleanroomAnimated) return;
+                cleanroomAnimated = true;
+                cleanroomObserver.unobserve(entry.target);
+                animateCleanroom();
+            });
+        }, { threshold: 0.2 });
+
+        function animateCleanroom() {
+            var diagram = document.getElementById('cleanroomDiagram');
+            if (!diagram) return;
+            var panels = diagram.querySelectorAll('.cleanroom-panel');
+            var baseDelay = REDUCED_MOTION ? 0 : 200;
+            var stepDelay = REDUCED_MOTION ? 0 : 400;
+            var fastStepDelay = REDUCED_MOTION ? 0 : 120;
+
+            panels.forEach(function(panel, panelIdx) {
+                var steps = panel.querySelectorAll('.cr-step');
+                var arrows = panel.querySelectorAll('.cr-arrow');
+                var duration = panel.querySelector('.cr-duration');
+                var isNew = panel.classList.contains('panel-new');
+                var panelOffset = isNew ? (baseDelay + steps.length * stepDelay + arrows.length * (stepDelay / 2) + 600) : 0;
+                var currentDelay = panelOffset + baseDelay;
+                var sd = isNew ? fastStepDelay : stepDelay;
+
+                var allEls = panel.querySelectorAll('.cr-step, .cr-arrow');
+                allEls.forEach(function(el) {
+                    setTimeout(function() { el.classList.add('cr-visible'); }, currentDelay);
+                    currentDelay += el.classList.contains('cr-step') ? sd : sd / 2;
+                });
+
+                if (duration) {
+                    setTimeout(function() { duration.classList.add('cr-visible'); }, currentDelay + (isNew ? 100 : 400));
+                }
+            });
+        }
+
+        // ═══ COST ANIMATION ═══
+
+        var costAnimated = false;
+        var costObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting || costAnimated) return;
+                costAnimated = true;
+                costObserver.unobserve(entry.target);
+                animateCost();
+            });
+        }, { threshold: 0.15 });
+
+        function animateCost() {
+            var diagram = document.getElementById('costDiagram');
+            if (!diagram) return;
+            var rows = diagram.querySelectorAll('.cost-row');
+            var total = diagram.querySelector('.cost-total');
+            var vs = diagram.querySelector('.cost-vs');
+            var baseDelay = REDUCED_MOTION ? 0 : 150;
+
+            rows.forEach(function(row, i) {
+                setTimeout(function() {
+                    row.classList.add('cost-visible');
+                    var fill = row.querySelector('.cost-bar-fill');
+                    if (fill) {
+                        var targetW = fill.getAttribute('data-width');
+                        setTimeout(function() { fill.style.width = targetW + '%'; }, 50);
+                    }
+                }, i * baseDelay);
+            });
+
+            var totalDelay = rows.length * baseDelay + 300;
+            if (total) {
+                setTimeout(function() {
+                    total.classList.add('cost-visible');
+                    var fill = total.querySelector('.cost-bar-fill');
+                    if (fill) {
+                        var targetW = fill.getAttribute('data-width');
+                        setTimeout(function() { fill.style.width = targetW + '%'; }, 50);
+                    }
+                }, REDUCED_MOTION ? 0 : totalDelay);
+            }
+
+            if (vs) {
+                setTimeout(function() { vs.classList.add('cost-visible'); }, REDUCED_MOTION ? 0 : totalDelay + 500);
+            }
+        }
+
+        // ═══ PIPELINE ANIMATION ═══
+
+        var pipelineAnimated = false;
+        var pipelineObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting || pipelineAnimated) return;
+                pipelineAnimated = true;
+                pipelineObserver.unobserve(entry.target);
+                animatePipeline();
+            });
+        }, { threshold: 0.25 });
+
+        function animatePipeline() {
+            var diagram = document.getElementById('pipelineDiagram');
+            if (!diagram) return;
+            var stages = diagram.querySelectorAll('.pipe-stage');
+            var arrows = diagram.querySelectorAll('.pipe-arrow');
+            var delay = REDUCED_MOTION ? 0 : 250;
+
+            stages.forEach(function(stage, i) {
+                setTimeout(function() {
+                    stage.classList.add('pipe-active');
+                    if (arrows[i - 1]) arrows[i - 1].classList.add('pipe-active');
+                }, i * delay);
+            });
+        }
+
+        // ═══ WORD REVEAL ═══
+
+        function initWordReveal() {
+            var el = document.getElementById('closingReveal');
+            if (!el) return;
+            var text = el.textContent;
+            var words = text.split(/\s+/);
+            el.innerHTML = '';
+            words.forEach(function(word) {
+                var span = document.createElement('span');
+                span.className = 'word-span';
+                span.textContent = word;
+                el.appendChild(span);
+            });
+
+            var wordObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (!entry.isIntersecting) return;
+                    wordObserver.unobserve(entry.target);
+                    var spans = entry.target.querySelectorAll('.word-span');
+                    var d = REDUCED_MOTION ? 0 : 100;
+                    spans.forEach(function(s, i) {
+                        setTimeout(function() { s.classList.add('word-visible'); }, i * d);
+                    });
+                });
+            }, { threshold: 0.3 });
+            wordObserver.observe(el);
+        }
+
+        // ═══ INIT ═══
+
+        function init() {
+            chapterDots = Array.prototype.slice.call(document.querySelectorAll('.chapter-dot'));
+
+            chapterDots.forEach(function(dot) {
+                dot.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var target = document.querySelector(this.getAttribute('href'));
+                    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+
+            if (window.innerWidth > 768 && !REDUCED_MOTION && canvas && ctx) {
+                resizeCanvas();
+                initNetwork();
+                canvasActive = true;
+                requestAnimationFrame(drawNetwork);
+                window.addEventListener('resize', function() {
+                    resizeCanvas();
+                });
+            } else if (canvas) {
+                canvas.style.display = 'none';
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+
+            document.querySelectorAll('.blog-body > p:not(.pullquote):not(.thank-you-line):not(.thank-you-stop):not(.word-reveal)').forEach(function(el) {
+                el.classList.add('scroll-reveal');
+                revealObserver.observe(el);
+            });
+
+            document.querySelectorAll('.blog-body > .blog-diagram').forEach(function(el) {
+                if (!el.id || (el.id !== 'cleanroomDiagram' && el.id !== 'costDiagram' && el.id !== 'pipelineDiagram')) {
+                    el.classList.add('scroll-reveal');
+                }
+                revealObserver.observe(el);
+            });
+
+            document.querySelectorAll('.blog-body > ul, .blog-body > ol').forEach(function(el) {
+                el.classList.add('scroll-reveal');
+                revealObserver.observe(el);
+            });
+
+            document.querySelectorAll('.thank-you-line').forEach(function(el) {
+                thankYouObserver.observe(el);
+            });
+
+            document.querySelectorAll('.thank-you-stop').forEach(function(el) {
+                thankYouObserver.observe(el);
+            });
+
+            document.querySelectorAll('.v-tl-event').forEach(function(el) {
+                revealObserver.observe(el);
+            });
+
+            document.querySelectorAll('.pullquote').forEach(function(el) {
+                spotlightObserver.observe(el);
+            });
+
+            var cleanroomDiag = document.getElementById('cleanroomDiagram');
+            if (cleanroomDiag) cleanroomObserver.observe(cleanroomDiag);
+
+            var costDiag = document.getElementById('costDiagram');
+            if (costDiag) costObserver.observe(costDiag);
+
+            var pipelineDiag = document.getElementById('pipelineDiagram');
+            if (pipelineDiag) pipelineObserver.observe(pipelineDiag);
+
+            initWordReveal();
+            updateScroll();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
 </body>
 </html>
