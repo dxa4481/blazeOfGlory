@@ -5,6 +5,22 @@
 var STATUS_BUCKET_URL = window.STATUS_BUCKET_URL || '';
 var BACKEND_API_URL = window.BACKEND_API_URL || '';
 
+var MANIFEST_TYPES = {
+    "package.json": "npm",
+    "requirements.txt": "pip",
+    "Pipfile": "pipfile",
+    "pyproject.toml": "pyproject",
+    "Cargo.toml": "cargo",
+    "Gemfile": "gemfile",
+    "go.mod": "gomod",
+    "pom.xml": "maven",
+    "build.gradle": "gradle",
+    "composer.json": "composer",
+    "pubspec.yaml": "pubspec",
+    "mix.exs": "mix",
+    "cpanfile": "cpan",
+};
+
 var _backendHealthy = null; // null = unknown, true/false after check
 
 function escapeHtml(str) {
@@ -146,35 +162,59 @@ function initFileUpload() {
     });
 }
 
+function detectManifestType(filename) {
+    var basename = filename.replace(/^.*[\/\\]/, '');
+    if (MANIFEST_TYPES[basename]) return MANIFEST_TYPES[basename];
+    if (basename.match(/\.csproj$/)) return 'nuget';
+    return null;
+}
+
 function processFile(file) {
+    var manifestType = detectManifestType(file.name);
+    if (!manifestType) {
+        var supported = Object.keys(MANIFEST_TYPES).concat(['*.csproj']).join(', ');
+        showInlineError('uploadError', 'Unsupported file. Supported manifests: ' + supported, 'warning');
+        return;
+    }
+
     var reader = new FileReader();
     reader.onload = function(e) {
         try {
             var content = e.target.result;
-            window.pendingPackageJsonRaw = content;
-            if (!file.name.endsWith('.json')) {
-                showInlineError('uploadError', 'Please upload a package.json file.', 'warning');
-                return;
-            }
-            var json = JSON.parse(content);
-            var deps = json.dependencies || {};
-            var devDeps = json.devDependencies || {};
-            var allNames = Object.keys(deps).concat(Object.keys(devDeps));
-            var uniqueNames = [];
-            var seen = {};
-            allNames.forEach(function(n) { if (!seen[n]) { seen[n] = true; uniqueNames.push(n); } });
 
-            if (uniqueNames.length === 0) {
-                showInlineError('uploadError', 'No dependencies found in package.json.', 'warning');
-                return;
-            }
+            if (manifestType === 'npm') {
+                // Existing npm/package.json path: client-side parsing + preview
+                window.pendingPackageJsonRaw = content;
+                window.pendingManifestType = null;
+                window.pendingManifestContent = null;
+                var json = JSON.parse(content);
+                var deps = json.dependencies || {};
+                var devDeps = json.devDependencies || {};
+                var allNames = Object.keys(deps).concat(Object.keys(devDeps));
+                var uniqueNames = [];
+                var seen = {};
+                allNames.forEach(function(n) { if (!seen[n]) { seen[n] = true; uniqueNames.push(n); } });
 
-            clearInlineError('uploadError');
-            showQuoteLoading(uniqueNames);
-            fetchServerQuote(json);
+                if (uniqueNames.length === 0) {
+                    showInlineError('uploadError', 'No dependencies found in package.json.', 'warning');
+                    return;
+                }
+
+                clearInlineError('uploadError');
+                showQuoteLoading(uniqueNames);
+                fetchServerQuote(json);
+            } else {
+                // Non-npm: send raw content to backend for parsing
+                window.pendingPackageJsonRaw = null;
+                window.pendingManifestType = manifestType;
+                window.pendingManifestContent = content;
+                clearInlineError('uploadError');
+                showQuoteLoading(['Analyzing ' + file.name + '...']);
+                fetchServerQuote(null);
+            }
         } catch (err) {
             console.error('Error parsing file:', err);
-            showInlineError('uploadError', 'Invalid JSON file. Please upload a valid package.json.');
+            showInlineError('uploadError', 'Invalid file. Please check the file format and try again.');
         }
     };
     reader.readAsText(file);
@@ -190,7 +230,7 @@ function showQuoteLoading(packageNames) {
     depsList.innerHTML = packageNames.map(function(p) {
         return '<div class="dep-item"><span class="dep-name">' + escapeHtml(p) + '</span><span style="color:#888;font-size:0.8rem;">looking up...</span></div>';
     }).join('');
-    quoteSummary.innerHTML = '<div class="quote-line" style="color:#888;">Fetching package sizes from npm registry...</div>';
+    quoteSummary.innerHTML = '<div class="quote-line" style="color:#888;">Fetching package sizes from registry...</div>';
 }
 
 function fetchServerQuote(packageJson) {
@@ -198,10 +238,16 @@ function fetchServerQuote(packageJson) {
         showBanner('Backend not configured. Please contact support.', 'error');
         return;
     }
+    var reqBody;
+    if (window.pendingManifestType && window.pendingManifestContent != null) {
+        reqBody = { manifest_type: window.pendingManifestType, manifest_content: window.pendingManifestContent };
+    } else {
+        reqBody = { package_json: packageJson };
+    }
     fetch(BACKEND_API_URL.replace(/\/$/, '') + '/api/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ package_json: packageJson })
+        body: JSON.stringify(reqBody)
     })
     .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
     .then(function(result) {
@@ -333,24 +379,36 @@ function processPayment() {
     btn.innerHTML = 'Redirecting to Stripe...';
     btn.disabled = true;
 
-    var pkgJson;
-    try { pkgJson = JSON.parse(window.pendingPackageJsonRaw); } catch(e) {
-        showBanner('Package data lost. Please re-upload your package.json.', 'error');
-        btn.innerHTML = '&#9654; Complete Liberation';
-        btn.disabled = false;
-        return;
+    var checkoutBody;
+    if (window.pendingManifestType && window.pendingManifestContent != null) {
+        checkoutBody = { manifest_type: window.pendingManifestType, manifest_content: window.pendingManifestContent };
+    } else {
+        var pkgJson;
+        try { pkgJson = JSON.parse(window.pendingPackageJsonRaw); } catch(e) {
+            showBanner('Package data lost. Please re-upload your manifest.', 'error');
+            btn.innerHTML = '&#9654; Complete Liberation';
+            btn.disabled = false;
+            return;
+        }
+        checkoutBody = { package_json: pkgJson };
     }
 
     fetch(BACKEND_API_URL.replace(/\/$/, '') + '/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ package_json: pkgJson })
+        body: JSON.stringify(checkoutBody)
     })
     .then(function(res) { return res.json(); })
     .then(function(data) {
         if (data.checkout_url) {
-            if (window.pendingPackageJsonRaw) {
+            if (window.pendingManifestType && window.pendingManifestContent != null) {
+                localStorage.setItem('pendingManifestType', window.pendingManifestType);
+                localStorage.setItem('pendingManifestContent', window.pendingManifestContent);
+                localStorage.removeItem('pendingPackageJson');
+            } else if (window.pendingPackageJsonRaw) {
                 localStorage.setItem('pendingPackageJson', window.pendingPackageJsonRaw);
+                localStorage.removeItem('pendingManifestType');
+                localStorage.removeItem('pendingManifestContent');
             }
             window.location.href = data.checkout_url;
         } else {

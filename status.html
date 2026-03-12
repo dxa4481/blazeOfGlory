@@ -731,9 +731,9 @@
             <div class="status-card" data-label="UPLOAD REQUIRED">
                 <div class="upload-form-area">
                     <div class="status-label" style="margin-bottom: 0.5rem;">PAYMENT RECEIVED</div>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Upload your package.json to start processing.</p>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Upload your manifest file to start processing.</p>
                     <form id="uploadPackageForm">
-                        <input type="file" id="packageJsonFile" accept=".json,application/json" required>
+                        <input type="file" id="packageJsonFile" required>
                         <button type="submit" class="upload-submit-btn">Submit</button>
                     </form>
                     <div id="uploadError" class="error-message hidden" style="margin-top: 0.75rem;"></div>
@@ -833,6 +833,7 @@
         </div>
     </div>
 
+    <script src="config.local.js" onerror=""></script>
     <script src="config.js"></script>
     <script>
         var BACKEND_API_URL = window.BACKEND_API_URL || '';
@@ -1220,32 +1221,40 @@
 
         // ── Job Submission ──
 
-        function submitJobFromStorage(pkgJsonStr) {
+        function submitJobFromStorage(pkgJsonStr, manifestType, manifestContent) {
             if (!BACKEND_API_URL || !sessionId) return;
 
             hideAll();
             document.getElementById('autoSubmitArea').classList.remove('hidden');
 
-            var parsed;
-            try {
-                parsed = JSON.parse(pkgJsonStr);
-            } catch (e) {
-                document.getElementById('autoSubmitError').classList.remove('hidden');
-                document.getElementById('autoSubmitError').textContent = 'Stored package.json is invalid. Please upload manually.';
-                hideAll();
-                document.getElementById('uploadPackage').classList.remove('hidden');
-                return;
+            var reqBody;
+            if (manifestType && manifestContent != null) {
+                reqBody = { session_id: sessionId, manifest_type: manifestType, manifest_content: manifestContent };
+            } else {
+                var parsed;
+                try {
+                    parsed = JSON.parse(pkgJsonStr);
+                } catch (e) {
+                    document.getElementById('autoSubmitError').classList.remove('hidden');
+                    document.getElementById('autoSubmitError').textContent = 'Stored manifest is invalid. Please upload manually.';
+                    hideAll();
+                    document.getElementById('uploadPackage').classList.remove('hidden');
+                    return;
+                }
+                reqBody = { session_id: sessionId, package_json: parsed };
             }
 
             fetch(BACKEND_API_URL.replace(/\/$/, '') + '/api/jobs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ session_id: sessionId, package_json: parsed })
+                body: JSON.stringify(reqBody)
             })
             .then(function(r) {
                 if (r.ok) {
                     jobSubmitted = true;
                     localStorage.removeItem('pendingPackageJson');
+                    localStorage.removeItem('pendingManifestType');
+                    localStorage.removeItem('pendingManifestContent');
                     pollInterval = setInterval(fetchStatus, 5000);
                     fetchStatus();
                 } else if (r.status === 402 && autoSubmitRetries < maxAutoSubmitRetries) {
@@ -1253,7 +1262,7 @@
                     var retryMsg = document.getElementById('autoSubmitRetryMsg');
                     retryMsg.classList.remove('hidden');
                     retryMsg.innerHTML = '<div class="poll-dot"></div> Waiting for payment confirmation... (attempt ' + autoSubmitRetries + '/' + maxAutoSubmitRetries + ')';
-                    setTimeout(function() { submitJobFromStorage(pkgJsonStr); }, 3000);
+                    setTimeout(function() { submitJobFromStorage(pkgJsonStr, manifestType, manifestContent); }, 3000);
                 } else {
                     return r.json().then(function(d) {
                         hideAll();
@@ -1266,7 +1275,7 @@
             .catch(function(err) {
                 if (autoSubmitRetries < maxAutoSubmitRetries) {
                     autoSubmitRetries++;
-                    setTimeout(function() { submitJobFromStorage(pkgJsonStr); }, 3000);
+                    setTimeout(function() { submitJobFromStorage(pkgJsonStr, manifestType, manifestContent); }, 3000);
                 } else {
                     hideAll();
                     document.getElementById('uploadPackage').classList.remove('hidden');
@@ -1304,6 +1313,8 @@
                 if (r.ok) {
                     jobSubmitted = true;
                     localStorage.removeItem('pendingPackageJson');
+                    localStorage.removeItem('pendingManifestType');
+                    localStorage.removeItem('pendingManifestContent');
                     pollInterval = setInterval(fetchStatus, 5000);
                     fetchStatus();
                 } else {
@@ -1372,8 +1383,12 @@
             });
 
             var storedPkg = localStorage.getItem('pendingPackageJson');
-            if (storedPkg && BACKEND_API_URL) {
-                submitJobFromStorage(storedPkg);
+            var storedManifestType = localStorage.getItem('pendingManifestType');
+            var storedManifestContent = localStorage.getItem('pendingManifestContent');
+            if (storedManifestType && storedManifestContent != null && BACKEND_API_URL) {
+                submitJobFromStorage(null, storedManifestType, storedManifestContent);
+            } else if (storedPkg && BACKEND_API_URL) {
+                submitJobFromStorage(storedPkg, null, null);
             } else {
                 fetchStatus();
                 pollInterval = setInterval(fetchStatus, 5000);
